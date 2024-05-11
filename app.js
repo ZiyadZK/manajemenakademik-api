@@ -19,10 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 8080
 
-app.use('/v1', validateApiKey, route_v1)
+app.use('/simak', validateApiKey, route_v1)
 
-app.listen(port, () => {
-    console.log(`> Server is running on port ${port}`)
-})
+app.listen(port)
+
+console.log(`Server is running on port ${port}`)

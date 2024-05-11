@@ -1,5 +1,4 @@
-exports.validateApiKey = (req, res, next) => {
-    console.log(req.header)
+exports.validateApiKey = function (req, res, next) {
     const api_key = req.header('x-api-key')
     if(api_key !== process.env.API_MAIN_KEY) {
         return res.status(403).json({
@@ -11,7 +10,7 @@ exports.validateApiKey = (req, res, next) => {
     next()
 }
 
-exports.validateBody = (req, res, next) => {
+exports.validateBody = function (req, res, next) {
     const body = req.body
 
     const jsonKeys = Object.keys(body)
@@ -23,7 +22,7 @@ exports.validateBody = (req, res, next) => {
     next()
 }
 
-exports.validateFilterQuery = (req, res, next) => {
+exports.validateFilterQuery = function (req, res, next) {
     const filters = req.query.filters;
 
     if(filters) {

@@ -85,3 +85,21 @@ exports.F_Siswa_delete = async (arrayNis) => {
         }
     }
 }
+
+exports.F_Siswa_update = async (arrayNis, payload) => {
+    try {
+        await arrayNis.forEach(async (value) => await M_DataSiswa.update(payload,{ where: {nis: value}}) )
+
+        return {
+            success: true
+        }
+    } catch (error) {
+        console.log(error.message)
+        return {
+            success: false,
+            debug: {
+                message: error.message
+            }
+        }
+    }
+}
