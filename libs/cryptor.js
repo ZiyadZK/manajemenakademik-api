@@ -14,7 +14,7 @@ exports.decryptKey = async (token) => {
             success: false,
             token,
             debug: {
-                message: error.message
+                message: error
             }
         }
     }

@@ -1,8 +1,27 @@
 const { M_DataSertifikat } = require("../model/M_Sertifikat")
 
+exports.F_DataSertifikat_getAll = async () => {
+    try {
+        const data = await M_DataSertifikat.findAll()
+
+        return {
+            success: true,
+            data
+        }
+    } catch (error) {
+        console.log(error.message)
+        return {
+            success: false,
+            debug: {
+                message: error.message
+            }
+        }
+    }
+}
+
 exports.F_DataSertifikat_get = async (id_pegawai) => {
     try {
-        const data = await M_DataSertifikat.findOne({where: {sertifikat_id_pegawai: id_pegawai}})
+        const data = await M_DataSertifikat.findAll({where: {sertifikat_id_pegawai: id_pegawai}})
         
         return {
             success: true,

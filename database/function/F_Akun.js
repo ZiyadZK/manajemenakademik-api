@@ -66,7 +66,7 @@ exports.F_Akun_create = async (payload) => {
 exports.F_Akun_delete = async (idArr) => {
     try {
         if(Array.isArray(idArr)) {
-            await idArr.forEach(async (id) => await M_DataAkun.destroy({
+            idArr.forEach(async (id) => await M_DataAkun.destroy({
                 where: {
                     id_akun: id
                 }

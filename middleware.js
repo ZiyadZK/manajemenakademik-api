@@ -10,16 +10,28 @@ exports.validateApiKey = function (req, res, next) {
     next()
 }
 
-exports.validateBody = function (req, res, next) {
-    const body = req.body
+exports.validateBody = async function (req, res, next) {
+    try {
+        const body = req.body;
 
-    const jsonKeys = Object.keys(body)
-    if(jsonKeys.length < 1) {
+        // Attempt to parse the body as JSON
+
+        const jsonKeys = Object.keys(body);
+        if (jsonKeys.length < 1) {
+            return res.status(400).json({
+                error: 'JSON Body tidak berisi apa-apa, masih kosong!'
+            });
+        }
+        next();
+    } catch (error) {
+        // Handle JSON parsing errors
         return res.status(400).json({
-            error: 'JSON Body tidak berisi apa-apa, masih kosong!'
-        })
+            error: 'Terdapat kesalahan dalam parsing JSON Body',
+            debug: {
+                message: error.message
+            }
+        });
     }
-    next()
 }
 
 exports.validateFilterQuery = function (req, res, next) {
@@ -56,4 +68,25 @@ exports.validateFilterQuery = function (req, res, next) {
     }
 
     next()
+}
+
+exports.validateEmptyBody = async function (req, res, next) {
+    if(req.method === 'GET') {
+        console.log(`BODY : ${await req.body}`)
+        const isEmptyOrWhitespace = !req.body || /^[\s\u00A0]*$/.test(req.body);
+
+        if (isEmptyOrWhitespace) {
+            return res.status(400).json({ error: 'Empty JSON body' });
+        }
+    }
+
+    next()
+
+    // const isEmptyOrWhiteSpace = !req.body ||
+
+    // if (!req.body || /^\s*$/.test(req.body)) {
+    //     return res.status(400).json({ error: 'Empty JSON body' });
+    // }
+
+    // next();
 }
