@@ -1,5 +1,5 @@
 const express = require('express')
-const { F_Siswa_get, F_Siswa_get_single, F_Siswa_create, F_Siswa_update, F_Siswa_delete } = require('../../database/function/F_Siswa')
+const { F_Siswa_get, F_Siswa_get_single, F_Siswa_create, F_Siswa_update, F_Siswa_delete, F_Siswa_naikKelas } = require('../../database/function/F_Siswa')
 const { validateBody, validateFilterQuery } = require('../../middleware')
 const { F_Akun_validateLogin, F_Akun_getAll, F_Akun_create, F_Akun_update, F_Akun_delete } = require('../../database/function/F_Akun')
 const { decryptKey } = require('../../libs/cryptor')
@@ -111,8 +111,8 @@ const route_v1 = express.Router()
 .put('/v1/data/siswa', validateBody, async function (req, res)  {
     try {
         
-        const payload = req.body.payload
-        const arrayNis = req.body.arrayNis
+        const payload = await req.body.payload
+        const arrayNis = await req.body.arrayNis
     
         if(typeof(payload) === 'undefined' || typeof(arrayNis) === 'undefined') {
             return res.status(400).json({
@@ -120,28 +120,41 @@ const route_v1 = express.Router()
                 column: ['payload', 'arrayNis']
             })
         }
-    
-        if(arrayNis.length < 1) {
+
+        if(arrayNis === "") {
             return res.status(400).json({
                 error: 'Anda harus mengisi NIS terlebih dahulu di dalam arrayNis'
             })
         }
-    
-        const uniqueNis = []
-        
-        arrayNis.forEach(value => {
-            if(!uniqueNis.includes(value)) {
-                uniqueNis.push(value.toString())
+
+        if(Array.isArray(arrayNis)) {
+            if(arrayNis.length < 1) {
+                return res.status(400).json({
+                    error: 'Anda harus mengisi NIS terlebih dahulu di dalam arrayNis'
+                })
             }
-        })
-        
-        if(uniqueNis.includes('')){
-            return res.status(400).json({
-                error: 'Terdapat data yang kosong pada kolom arrayNis'
-            })
         }
     
-        const response = await F_Siswa_update(arrayNis, payload)
+    
+        let uniqueNis = []
+        
+        if(Array.isArray(arrayNis)) {
+            arrayNis.forEach(value => {
+                if(!uniqueNis.includes(value)) {
+                    uniqueNis.push(value.toString())
+                }
+            })
+            
+            if(uniqueNis.includes('')){
+                return res.status(400).json({
+                    error: 'Terdapat data yang kosong pada kolom arrayNis'
+                })
+            }
+        }else{
+            uniqueNis = arrayNis
+        }
+    
+        const response = await F_Siswa_update(uniqueNis, payload)
         if(response.success) {
             return res.status(200).json({
                 success: 'Berhasil mengubah data siswa',
@@ -168,12 +181,29 @@ const route_v1 = express.Router()
 .delete('/v1/data/siswa', validateBody, async (req, res) => {
     try {
         
-        const arrayNis = await req.body
+        const arrayNis = await req.body.arrayNis
         
         if(typeof(arrayNis) === 'undefined') {
             return res.status(400).json({
                 error: 'Anda harus mengirim nis dengan kolom `arrayNis`, baik itu string biasa atau pun array'
             })
+        }
+
+        if(arrayNis === '') {
+            return res.status(400).json({
+                error: 'Anda harus mengisi nis dengan kolom `arrayNis`, baik itu string biasa atau pun array'
+            })
+        }
+
+        console.log(Array.isArray(arrayNis))
+
+        if(Array.isArray(arrayNis)) {
+            
+            if(arrayNis.length < 1) {
+                return res.status(400).json({
+                    error: 'Anda harus mengisi nis dengan kolom `arrayNis`, baik itu string biasa atau pun array'
+                })
+            }
         }
     
         const responseData = await F_Siswa_delete(arrayNis)
@@ -201,13 +231,27 @@ const route_v1 = express.Router()
 
 .post('/v1/data/siswa/naikkelas', validateBody, async (req, res) => {
     try {
-        const nisTidakNaikKelasArr = await req.body
+        const nisTidakNaikKelasArr = await req.body.nisTidakNaikKelasArr
     
         if(typeof(nisTidakNaikKelasArr) === 'undefined') {
             return res.status(400).json({
-                error: "Anda harus menambahkan dafta"
+                error: "Anda harus menambahkan daftar nis yang tidak naik kelas di kolom `nisTidakNaikKelasArr`"
             })
         }
+
+        const responseData = await F_Siswa_naikKelas(nisTidakNaikKelasArr)
+        if(responseData.success) {
+            return res.status(200).json({
+                success: "Berhasil menghapus data siswa tersebut!"
+            })
+        }
+
+        return res.status(400).json({
+            error: "Terdapat error saat memproses data, silahkan cek log didalam server!",
+            debug: {
+                message: responseData.message
+            }
+        })
         
     } catch (error) {
         return res.status(500).json({

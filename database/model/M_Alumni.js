@@ -19,7 +19,7 @@ exports.M_DataAlumni = sequelize.define('data_alumni', {
       allowNull: true
     },
     nis: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(200),
       primaryKey: true
     },
     nisn: {

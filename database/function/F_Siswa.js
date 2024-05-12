@@ -1,5 +1,6 @@
 const { M_DataAlumni } = require("../model/M_Alumni");
-const { M_DataSiswa } = require("../model/M_Siswa")
+const { M_DataSiswa } = require("../model/M_Siswa");
+const { F_DataAlumni_create } = require("./F_Alumni");
 
 exports.F_Siswa_get = async (filters) => {
     try {
@@ -53,7 +54,11 @@ exports.F_Siswa_get_single = async (nis) => {
 
 exports.F_Siswa_create = async (payload) => {
     try {
-        await M_DataSiswa.bulkCreate(payload)
+        if(Array.isArray(payload)) {
+            await M_DataSiswa.bulkCreate(payload)
+        }else{
+            await M_DataSiswa.create(payload)
+        }
         
         return {
             success: true
@@ -89,7 +94,12 @@ exports.F_Siswa_delete = async (arrayNis) => {
 
 exports.F_Siswa_update = async (arrayNis, payload) => {
     try {
-        await arrayNis.forEach(async (value) => await M_DataSiswa.update(payload,{ where: {nis: value}}) )
+        console.log(arrayNis)
+        if(Array.isArray(arrayNis)) {
+            arrayNis.forEach(async (value) => await M_DataSiswa.update(payload,{ where: {nis: value}}) )
+        }else{
+            await M_DataSiswa.update(payload,{ where: {nis: arrayNis}});
+        }
 
         return {
             success: true
@@ -107,11 +117,19 @@ exports.F_Siswa_update = async (arrayNis, payload) => {
 
 exports.F_Siswa_delete = async (arrayNis) => {
     try {
-        await arrayNis.forEach(async (value) => await M_DataSiswa.destroy({
-            where: {
-                nis: value
-            }
-        }) )
+        if(Array.isArray(arrayNis)){
+            arrayNis.forEach(async (value) => await M_DataSiswa.destroy({
+                where: {
+                    nis: value
+                }
+            }) )
+        }else{ 
+            await M_DataSiswa.destroy({
+                where: {
+                    nis: arrayNis
+                }
+            })
+        }
 
         return {
             success: true
@@ -129,38 +147,51 @@ exports.F_Siswa_delete = async (arrayNis) => {
 
 exports.F_Siswa_naikKelas = async (nisArrTidakNaikKelas) => {
     try {
-        let siswaTidakNaik;
+        const dataSiswa = await M_DataSiswa.findAll();
 
-        // Dapatkan semua data kelas 10 11 12
-        let dataSiswa = await M_DataSiswa.findAll()
-        
-        if(nisArrTidakNaikKelas && nisArrTidakNaikKelas > 0) {
-            const daftarNisTidakNaikKelas = nisArrTidakNaikKelas.map(({nis}) => nis)
-            siswaTidakNaik = dataSiswa.filter(siswa => daftarNisTidakNaikKelas.includes(siswa.nis))
-            dataSiswa = dataSiswa.filter(siswa => !daftarNisTidakNaikKelas.includes(siswa.nis))
-        }
+        let dataAlumni = [];
+        let newDataKelas = {};
 
-        const dataKelas10 = dataSiswa.filter(siswa => siswa.kelas === 'X')
-        const dataKelas11 = dataSiswa.filter(siswa => siswa.kelas === 'XI')
-        const dataKelas12 = dataSiswa.filter(siswa => siswa.kelas === 'XII')
+        dataSiswa.forEach(siswa => {
+            const updatedSiswa = siswa.dataValues;
+            const siswaTidakNaik = nisArrTidakNaikKelas.find(siswaTidakNaik => siswaTidakNaik['nis'] === updatedSiswa['nis']);
+            
+            const newData = {
+                ...updatedSiswa,
+                tahun_keluar: (new Date()).getFullYear().toString(),
+                tanggal_keluar: new Date().toLocaleDateString('en-GB')
+            };
 
-        let updatedDataKelas12 = dataKelas12.map(siswa => ({...siswa, tahun_keluar: new Date().getFullYear().toString(), tanggal_keluar: `${new Date().toLocaleDateString('en-GB')}` }))
-        updatedDataKelas12 = updatedDataKelas12.map(siswa => {
-            const {aktif, ...newObj} = siswa
-            return newObj
-        })
+            if (siswaTidakNaik) {
+                newDataKelas[updatedSiswa.kelas] = newDataKelas[updatedSiswa.kelas] || [];
+                newDataKelas[updatedSiswa.kelas].push(newData);
+            } else {
+                if (updatedSiswa.kelas === 'XII') {
+                    dataAlumni.push(newData);
+                } else {
+                    const nextClass = {
+                        'X': 'XI',
+                        'XI': 'XII'
+                    };
+                    newData.kelas = nextClass[updatedSiswa.kelas];
+                    newDataKelas[newData.kelas] = newDataKelas[newData.kelas] || [];
+                    newDataKelas[newData.kelas].push(newData);
+                }
+            }
+        });
 
-        await M_DataSiswa.truncate()
+        // Create data alumni
+        await F_DataAlumni_create(dataAlumni);
 
-        await M_DataAlumni.bulkCreate(updatedDataKelas12)
+        // Clear all the siswa
+        await M_DataSiswa.truncate();
 
-        const newDataKelas12 = dataKelas11.map(siswa => ({...siswa, kelas: siswa.kelas.replace('XI', 'XII')}))
-        const newDataKelas11 = dataKelas10.map(siswa => ({...siswa, kelas: siswa.kelas.replace('X', 'XI')}))
-
-        await M_DataSiswa.bulkCreate([...newDataKelas11, ...newDataKelas12])
-
-        if(siswaTidakNaik && siswaTidakNaik.length > 0) {
-            await M_DataSiswa.bulkCreate(siswaTidakNaik)
+        // Insert the new data siswa
+        for (const kelas in newDataKelas) {
+            if (newDataKelas.hasOwnProperty(kelas)) {
+                console.log(newDataKelas[kelas].length);
+                await this.F_Siswa_create(newDataKelas[kelas]);
+            }
         }
 
         return {
