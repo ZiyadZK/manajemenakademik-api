@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
 
-exports.M_DataPegawai = sequelize.define('data_pegawai', {
+const M_DataPegawai = sequelize.define('data_pegawai', {
     id_pegawai: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -88,3 +88,7 @@ exports.M_DataPegawai = sequelize.define('data_pegawai', {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_pegawai' // If table name is different from model name
   });
+
+M_DataPegawai.sync()
+
+module.exports = {M_DataPegawai}

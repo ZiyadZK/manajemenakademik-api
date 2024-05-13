@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
 
-exports.M_DataIjazah = sequelize.define('data_ijazahs', {
+const M_DataIjazah = sequelize.define('data_ijazahs', {
     no: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -47,3 +47,7 @@ exports.M_DataIjazah = sequelize.define('data_ijazahs', {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_ijazahs' // If table name is different from model name
   });
+
+  M_DataIjazah.sync()
+
+module.exports = {M_DataIjazah}

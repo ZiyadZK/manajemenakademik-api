@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
 
-exports.M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
+const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
     kelas: {
       type: DataTypes.STRING(200),
       allowNull: true
@@ -115,3 +115,7 @@ exports.M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_mutasi_siswa' // If table name is different from model name
   });
+
+M_DataMutasiSiswa.sync()
+
+module.exports = {M_DataMutasiSiswa}

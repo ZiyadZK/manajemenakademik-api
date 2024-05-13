@@ -8,6 +8,7 @@ const { F_DataIjazah_getAll, F_DataIjazah_create, F_DataIjazah_update, F_DataIja
 const { F_DataPegawai_getAll, F_DataPegawai_get, F_DataPegawai_create, F_DataPegawai_update, F_DataPegawai_delete } = require('../../database/function/F_Pegawai')
 const { F_DataProfilSekolah_get, F_DataProfilSekolah_create, F_DataProfilSekolah_update } = require('../../database/function/F_ProfilSekolah')
 const { F_DataSertifikat_get, F_DataSertifikat_getAll, F_DataSertifikat_create, F_DataSertifikat_update, F_DataSertifikat_delete } = require('../../database/function/F_Sertifikat')
+const { F_DataMutasiSiswa_getAll, F_DataMutasiSiswa_create, F_DataMutasiSiswa_update, F_DataMutasiSiswa_delete, F_DataMutasiSIswa_get } = require('../../database/function/F_MutasiSiswa')
 
 const errorHandler = (response) => ({
     error: 'Terdapat error dalam server, silahkan cek log server!',
@@ -253,6 +254,199 @@ const route_v1 = express.Router()
             }
         })
         
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+// Data Mutasi Siswa
+.get('/v1/data/mutasisiswa', async (req, res) => {
+    try {
+        const responseData = await F_DataMutasiSiswa_getAll()
+
+        if(responseData.success) {
+            return res.status(200).json({
+                data: responseData.data
+            })
+        }
+
+        return res.status(400).json({
+            error: "Terdapat error saat memproses data, silahkan cek log didalam server!",
+            debug: responseData.debug
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.get('/v1/data/mutasisiswa/nis/:nis', async (req, res) => {
+    try {
+        const nis = req.params.nis
+
+        const responseData = await F_DataMutasiSIswa_get(nis)
+        
+        if(responseData.success) {
+            return res.status(200).json({
+                data: responseData.data
+            })
+        }
+
+        return res.status(400).json({
+            error: "Terdapat error saat memproses data, silahkan cek log didalam server!",
+            debug: responseData.debug
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.post('/v1/data/mutasisiswa', validateBody, async (req, res) => {
+    try {
+        
+        const payload = await req.body
+    
+        if(typeof(payload) === 'undefined') {
+            return res.status(400).json({
+                error: "JSON Body tidak boleh kosong!"
+            })
+        }
+    
+        if(typeof(payload) !== 'object') {
+            return res.status(400).json({
+                error: "JSON Body harus berupa object ataupun array dari object yang berisi data!"
+            })
+        }
+    
+        const responseData = await F_DataMutasiSiswa_create(payload)
+    
+        if(responseData.success) {
+            return res.status(200).json({
+                success: "Berhasil menambahkan data mutasi siswa!"
+            })
+        }
+    
+        return res.status(400).json({
+            error: "Terdapat error saat memproses data, silahkan cek log didalam server!",
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.put('/v1/data/mutasisiswa', validateBody, async (req, res) => {
+    try {
+        
+        const payload = await req.body.payload
+        const arrayNis = await req.body.arrayNis
+    
+        if(typeof(payload) === 'undefined' || typeof(arrayNis) === 'undefined') {
+            return res.status(400).json({
+                error: "JSON Body tidak boleh kosong, harus ada kolom `payload` yang berisi data, dan juga `arrayNis` yang berisi string ataupun array dari nis"
+            })
+        }
+
+        if(arrayNis === '') {
+            return res.status(400).json({
+                error: 'Anda harus mengisi NIS di kolom `arrayNis` terlebih dahulu!'
+            })
+        }
+
+        if(Array.isArray(arrayNis)) {
+            if(arrayNis.length < 1) {
+                return res.status(400).json({
+                    error: 'Anda harus mengisi NIS di kolom array `arrayNis` terlebih dahulu!'
+                })
+            }
+        }
+    
+        if(typeof(payload) !== 'object') {
+            return res.status(400).json({
+                error: "JSON Body harus berupa object ataupun array dari object yang berisi data!"
+            })
+        }
+    
+        const responseData = await F_DataMutasiSiswa_update(arrayNis, payload)
+    
+        if(responseData.success) {
+            return res.status(200).json({
+                success: "Berhasil mengubah data mutasi siswa!"
+            })
+        }
+    
+        return res.status(400).json({
+            error: "Terdapat error saat memproses data, silahkan cek log didalam server!",
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.delete('/v1/data/mutasisiswa', validateBody, async (req, res) => {
+    try {
+        
+        const arrayNis = await req.body.arrayNis
+    
+        if(typeof(arrayNis) === 'undefined') {
+            return res.status(400).json({
+                error: "JSON Body tidak boleh kosong, harus ada kolom `arrayNis` yang berisi string ataupun array dari nis"
+            })
+        }
+
+        if(arrayNis === '') {
+            return res.status(400).json({
+                error: 'Anda harus mengisi NIS di kolom `arrayNis` terlebih dahulu!'
+            })
+        }
+
+        if(Array.isArray(arrayNis)) {
+            if(arrayNis.length < 1) {
+                return res.status(400).json({
+                    error: 'Anda harus mengisi NIS di kolom array `arrayNis` terlebih dahulu!'
+                })
+            }
+        }
+    
+        const responseData = await F_DataMutasiSiswa_delete(arrayNis)
+    
+        if(responseData.success) {
+            return res.status(200).json({
+                success: "Berhasil menghapus data mutasi siswa!"
+            })
+        }
+    
+        return res.status(400).json({
+            error: "Terdapat error saat memproses data, silahkan cek log didalam server!",
+            debug: responseData.debug
+        })
     } catch (error) {
         return res.status(500).json({
             error: 'Terdapat error dalam server, silahkan cek log server!',

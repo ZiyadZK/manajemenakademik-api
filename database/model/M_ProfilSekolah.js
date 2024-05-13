@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
 
-exports.M_DataProfilSekolah = sequelize.define('data_profil_sekolah', {
+const M_DataProfilSekolah = sequelize.define('data_profil_sekolah', {
     npsn: {
       type: DataTypes.STRING,
       primaryKey: true
@@ -54,3 +54,7 @@ exports.M_DataProfilSekolah = sequelize.define('data_profil_sekolah', {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_profil_sekolah' // If table name is different from model name
   });
+
+  M_DataProfilSekolah.sync()
+
+module.exports = {M_DataProfilSekolah}

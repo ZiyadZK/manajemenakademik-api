@@ -1,3 +1,4 @@
+const { nanoid } = require("nanoid")
 const { M_DataPegawai } = require("../model/M_Pegawai")
 const { M_DataSertifikat } = require("../model/M_Sertifikat")
 const { F_DataSertifikat_create } = require("./F_Sertifikat")

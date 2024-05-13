@@ -1,5 +1,5 @@
 const { encryptKey } = require("../../libs/cryptor")
-const { M_DataAkun } = require("../model/M_Akun")
+const { M_DataAkun } = require('../model/M_Akun')
 
 exports.F_Akun_validateLogin = async (payload) => {
     try {
