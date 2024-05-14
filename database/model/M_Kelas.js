@@ -10,6 +10,14 @@ const M_DataKelas = sequelize.define('data_kelas', {
       type: DataTypes.STRING,
       allowNull: false
     },
+    rombel: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    no_rombel: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     id_walikelas: {
       type: DataTypes.STRING,
       allowNull: false
@@ -39,6 +47,6 @@ const M_DataKelas = sequelize.define('data_kelas', {
     tableName: 'data_kelas' // If table name is different from model name
   });
 
-  M_DataKelas.sync()
+  M_DataKelas.sync({ alter: true})
 
 module.exports = {M_DataKelas}

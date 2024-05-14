@@ -1569,9 +1569,12 @@ const route_v1 = express.Router()
         const rombel = req.params.rombel
         const no_rombel = req.params.no_rombel
 
+        console.log(req.params)
+
         const id_pegawai = await req.body.id_pegawai
         const nama_pegawai = await req.body.nama_pegawai
         const nik_pegawai = await req.body.nik_pegawai
+        console.log(req.body)
 
         if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
             return res.status(400).json({
