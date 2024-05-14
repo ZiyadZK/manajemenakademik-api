@@ -1,6 +1,6 @@
 const express = require('express')
 const { F_Siswa_get, F_Siswa_get_single, F_Siswa_create, F_Siswa_update, F_Siswa_delete, F_Siswa_naikKelas } = require('../../database/function/F_Siswa')
-const { validateBody, validateFilterQuery } = require('../../middleware')
+const { validateBody, validateFilterQuery, ignoreBodyMethod } = require('../../middleware')
 const { F_Akun_validateLogin, F_Akun_getAll, F_Akun_create, F_Akun_update, F_Akun_delete } = require('../../database/function/F_Akun')
 const { decryptKey } = require('../../libs/cryptor')
 const { F_DataAlumni_getAll, F_DataAlumni_get, F_DataAlumni_create, F_DataAlumni_update, F_DataAlumni_delete } = require('../../database/function/F_Alumni')
@@ -9,6 +9,7 @@ const { F_DataPegawai_getAll, F_DataPegawai_get, F_DataPegawai_create, F_DataPeg
 const { F_DataProfilSekolah_get, F_DataProfilSekolah_create, F_DataProfilSekolah_update } = require('../../database/function/F_ProfilSekolah')
 const { F_DataSertifikat_get, F_DataSertifikat_getAll, F_DataSertifikat_create, F_DataSertifikat_update, F_DataSertifikat_delete } = require('../../database/function/F_Sertifikat')
 const { F_DataMutasiSiswa_getAll, F_DataMutasiSiswa_create, F_DataMutasiSiswa_update, F_DataMutasiSiswa_delete, F_DataMutasiSIswa_get } = require('../../database/function/F_MutasiSiswa')
+const { F_DataKelas_getAll, F_DataKelas_get, F_DataKelas_setWaliKelas, F_DataKelas_setGuruBK, F_DataKelas_deleteWaliKelas, F_DataKelas_deleteGuruBK } = require('../../database/function/F_Kelas')
 
 const errorHandler = (response) => ({
     error: 'Terdapat error dalam server, silahkan cek log server!',
@@ -1451,6 +1452,291 @@ const route_v1 = express.Router()
             })
         }
     
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+// Data Kelas
+.get('/v1/data/kelas', async (req, res) => {
+    try {
+        const responseData = await F_DataKelas_getAll()
+
+        if(responseData.success) {
+            return res.status(200).json({
+                data: responseData.data
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.get('/v1/data/kelas/:kelas/:rombel/:no_rombel', async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const responseData = await F_DataKelas_get(kelas, rombel, no_rombel)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                data: responseData.data
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.put('/v1/data/kelas/:kelas/:rombel/:no_rombel/walikelas', validateBody, async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const id_pegawai = await req.body.id_pegawai
+        const nama_pegawai = await req.body.nama_pegawai
+        const nik_pegawai = await req.body.nik_pegawai
+
+        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                success: `Berhasil mengubah data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.post('/v1/data/kelas/:kelas/:rombel/:no_rombel/walikelas', validateBody, async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const id_pegawai = await req.body.id_pegawai
+        const nama_pegawai = await req.body.nama_pegawai
+        const nik_pegawai = await req.body.nik_pegawai
+
+        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                success: `Berhasil mengubah data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.post('/v1/data/kelas/:kelas/:rombel/:no_rombel/gurubk', validateBody, async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const id_pegawai = await req.body.id_pegawai
+        const nama_pegawai = await req.body.nama_pegawai
+        const nik_pegawai = await req.body.nik_pegawai
+
+        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                success: `Berhasil mengubah data guru bk untuk ${kelas} ${rombel} ${no_rombel}`
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.put('/v1/data/kelas/:kelas/:rombel/:no_rombel/gurubk', validateBody, async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const id_pegawai = await req.body.id_pegawai
+        const nama_pegawai = await req.body.nama_pegawai
+        const nik_pegawai = await req.body.nik_pegawai
+
+        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
+            return res.status(400).json({
+                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
+            })
+        }
+
+        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                success: `Berhasil mengubah data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.delete('/v1/data/kelas/:kelas/:rombel/:no_rombel/walikelas', ignoreBodyMethod, async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const responseData = await F_DataKelas_deleteWaliKelas(kelas, rombel, no_rombel)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                success: `Berhasil menghapus data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.delete('/v1/data/kelas/:kelas/:rombel/:no_rombel/gurubk', ignoreBodyMethod, async (req, res) => {
+    try {
+        const kelas = req.params.kelas
+        const rombel = req.params.rombel
+        const no_rombel = req.params.no_rombel
+
+        const responseData = await F_DataKelas_deleteGuruBK(kelas, rombel, no_rombel)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                success: `Berhasil menghapus data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
+            })
+        }
+
         return res.status(400).json({
             error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
             debug: responseData.debug

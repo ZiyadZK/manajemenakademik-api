@@ -47,7 +47,6 @@ exports.validateFilterQuery = function (req, res, next) {
             }
 
             if(filters[key] === null || filters[key] === '') {
-                console.log(filters[key])
                 emptyFilters.push(key)
             }
         })
@@ -72,7 +71,6 @@ exports.validateFilterQuery = function (req, res, next) {
 
 exports.validateEmptyBody = async function (req, res, next) {
     if(req.method === 'GET') {
-        console.log(`BODY : ${await req.body}`)
         const isEmptyOrWhitespace = !req.body || /^[\s\u00A0]*$/.test(req.body);
 
         if (isEmptyOrWhitespace) {
@@ -89,4 +87,9 @@ exports.validateEmptyBody = async function (req, res, next) {
     // }
 
     // next();
+}
+
+exports.ignoreBodyMethod = async (req, res, next) => {
+    bodyParser.json()(req, res, next);
+    next()
 }
