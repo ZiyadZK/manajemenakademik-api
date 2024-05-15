@@ -1,4 +1,6 @@
 const { encryptKey } = require("../../libs/cryptor")
+const { randNumber } = require("../../libs/functions/randNumber")
+const { sendEmail } = require("../../libs/mailer")
 const { M_DataAkun } = require('../model/M_Akun')
 
 exports.F_Akun_validateLogin = async (payload) => {
@@ -11,11 +13,28 @@ exports.F_Akun_validateLogin = async (payload) => {
             throw new Error('Email dan Password tidak ditemukan!')
         }
 
-        const token = await encryptKey(data)
         
-        return {
-            success: true,
-            token
+        const userdataToken = randNumber(6)
+        // const responseEmail = await sendEmail(payload.email_akun, 'Verifikasi PIN', `PIN Anda adalah ${userdataToken}`)
+        const responseEmail = {
+            success: true
+        }
+        if(responseEmail.success) {
+            const userdata = {...data['dataValues'], userdataToken}
+    
+            const token = await encryptKey(userdata)
+            console.log(userdata)
+            
+            return {
+                success: true,
+                token
+            }
+        }else{
+            console.log(responseEmail)
+            return {
+                success: false,
+                message: responseEmail.message
+            }
         }
     } catch (error) {
         console.log(error.message)
