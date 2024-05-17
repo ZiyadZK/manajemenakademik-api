@@ -2,7 +2,9 @@ const { M_DataSertifikat } = require("../model/M_Sertifikat")
 
 exports.F_DataSertifikat_getAll = async () => {
     try {
-        const data = await M_DataSertifikat.findAll()
+        const data = await M_DataSertifikat.findAll({
+            raw: true
+        })
 
         return {
             success: true,

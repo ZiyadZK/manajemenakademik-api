@@ -19,6 +19,10 @@ const M_DataRiwayat = sequelize.define('data_riwayat', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    keterangan: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     nama: {
         type: DataTypes.STRING,
         allowNull: true
@@ -30,7 +34,17 @@ const M_DataRiwayat = sequelize.define('data_riwayat', {
     records: {
         type: DataTypes.JSON,
         allowNull: true
+    },
+    tanggal: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    waktu: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
+}, {
+    timestamps: false
 })
 
 M_DataRiwayat.sync({alter: true})

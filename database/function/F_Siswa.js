@@ -7,10 +7,13 @@ exports.F_Siswa_get = async (filters) => {
         let data;
         if(typeof(filters) === 'object') {
             data = await M_DataSiswa.findAll({
-                where: filters
+                where: filters,
+                raw: true
             })
         }else{
-            data = await M_DataSiswa.findAll()
+            data = await M_DataSiswa.findAll({
+                raw: true
+            })
         }
 
         return {

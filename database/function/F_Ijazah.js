@@ -2,7 +2,9 @@ const { M_DataIjazah } = require("../model/M_Ijazah")
 
 exports.F_DataIjazah_getAll = async () => {
     try {
-        const data = await M_DataIjazah.findAll()
+        const data = await M_DataIjazah.findAll({
+            raw: true
+        })
 
         return {
             success: true,

@@ -1,3 +1,5 @@
+const bodyParser = require("body-parser")
+
 exports.validateApiKey = function (req, res, next) {
     const api_key = req.header('x-api-key')
     if(api_key !== process.env.API_MAIN_KEY) {

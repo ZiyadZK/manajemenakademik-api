@@ -9,7 +9,7 @@ const { F_DataPegawai_getAll, F_DataPegawai_get, F_DataPegawai_create, F_DataPeg
 const { F_DataProfilSekolah_get, F_DataProfilSekolah_create, F_DataProfilSekolah_update } = require('../../database/function/F_ProfilSekolah')
 const { F_DataSertifikat_get, F_DataSertifikat_getAll, F_DataSertifikat_create, F_DataSertifikat_update, F_DataSertifikat_delete } = require('../../database/function/F_Sertifikat')
 const { F_DataMutasiSiswa_getAll, F_DataMutasiSiswa_create, F_DataMutasiSiswa_update, F_DataMutasiSiswa_delete, F_DataMutasiSIswa_get } = require('../../database/function/F_MutasiSiswa')
-const { F_DataKelas_getAll, F_DataKelas_get, F_DataKelas_setWaliKelas, F_DataKelas_setGuruBK, F_DataKelas_deleteWaliKelas, F_DataKelas_deleteGuruBK } = require('../../database/function/F_Kelas')
+const { F_DataKelas_getAll, F_DataKelas_get, F_DataKelas_setWaliKelas, F_DataKelas_setGuruBK, F_DataKelas_deleteWaliKelas, F_DataKelas_deleteGuruBK, F_DataKelas_deleteRoleKelas } = require('../../database/function/F_Kelas')
 const { F_DataRiwayat_getAll, F_DataRiwayat_get, F_DataRiwayat_create } = require('../../database/function/F_Riwayat')
 
 const errorHandler = (response) => ({
@@ -1699,17 +1699,28 @@ const route_v1 = express.Router()
     }
 })
 
-.delete('/v1/data/kelas/:kelas/:rombel/:no_rombel/walikelas', ignoreBodyMethod, async (req, res) => {
+.delete('/v1/data/kelas', async (req, res) => {
     try {
-        const kelas = req.params.kelas
-        const rombel = req.params.rombel
-        const no_rombel = req.params.no_rombel
+        const parameter = await req.body.parameter
+        const role = await req.body.role
 
-        const responseData = await F_DataKelas_deleteWaliKelas(kelas, rombel, no_rombel)
+        if(typeof(parameter) !== 'object') {
+            return res.status(400).json({
+                error: 'Anda harus mengisi kolom `parameter` dengan object `kelas`,`rombel`, dan `no_rombel`'
+            })
+        }
+
+        if(role === '') {
+            return res.status(400).json({
+                error: 'Anda harus mengisi kolom `role` dengan `Wali Kelas`, atau `Guru BK`'
+            })
+        }
+
+        const responseData = await F_DataKelas_deleteRoleKelas(parameter, role)
 
         if(responseData.success) {
             return res.status(200).json({
-                success: `Berhasil menghapus data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
+                success: `Berhasil menghapus data wali kelas untuk ${parameter.kelas} ${parameter.rombel} ${parameter.no_rombel}`
             })
         }
 
@@ -1727,36 +1738,10 @@ const route_v1 = express.Router()
     }
 })
 
-.delete('/v1/data/kelas/:kelas/:rombel/:no_rombel/gurubk', ignoreBodyMethod, async (req, res) => {
-    try {
-        const kelas = req.params.kelas
-        const rombel = req.params.rombel
-        const no_rombel = req.params.no_rombel
 
-        const responseData = await F_DataKelas_deleteGuruBK(kelas, rombel, no_rombel)
-
-        if(responseData.success) {
-            return res.status(200).json({
-                success: `Berhasil menghapus data wali kelas untuk ${kelas} ${rombel} ${no_rombel}`
-            })
-        }
-
-        return res.status(400).json({
-            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
-            debug: responseData.debug
-        })
-    } catch (error) {
-        return res.status(500).json({
-            error: 'Terdapat error dalam server, silahkan cek log server!',
-            debug: {
-                message: error.message
-            }
-        })
-    }
-})
 
 // Data Riwayat
-.get('/v1/data/riwayat', ignoreBodyMethod, async (req, res) => {
+.get('/v1/data/riwayat', async (req, res) => {
     try {
 
         const responseData = await F_DataRiwayat_getAll()
@@ -1781,7 +1766,7 @@ const route_v1 = express.Router()
     }
 })
 
-.get('/v1/data/riwayat/detail/:id_riwayat', ignoreBodyMethod, async (req, res) => {
+.get('/v1/data/riwayat/detail/:id_riwayat', async (req, res) => {
     try {
         const id_riwayat = req.params.id_riwayat
 

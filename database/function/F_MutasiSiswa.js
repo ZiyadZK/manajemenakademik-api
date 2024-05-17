@@ -25,8 +25,9 @@ exports.F_DataMutasiSiswa_create = async (payload) => {
 exports.F_DataMutasiSIswa_get = async (nis) => {
     try {
         const data = await M_DataMutasiSiswa.findOne({
-            where: {nis}
-        })
+            where: {nis},
+            raw: true
+        }, )
 
         return {
             success: true,
@@ -45,7 +46,9 @@ exports.F_DataMutasiSIswa_get = async (nis) => {
  
 exports.F_DataMutasiSiswa_getAll = async () => {
     try {
-        const data = await M_DataMutasiSiswa.findAll()
+        const data = await M_DataMutasiSiswa.findAll({
+            raw: true
+        })
 
         return {
             success: true,

@@ -47,7 +47,9 @@ exports.F_Akun_validateLogin = async (payload) => {
 
 exports.F_Akun_getAll = async () => {
     try {
-        const data = await M_DataAkun.findAll()
+        const data = await M_DataAkun.findAll({
+            raw: true
+        })
 
         return {
             success: true,

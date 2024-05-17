@@ -2,7 +2,9 @@ const { M_DataRiwayat } = require("../model/M_Riwayat")
 
 exports.F_DataRiwayat_getAll = async () => {
     try {
-        const data = await M_DataRiwayat.findAll()
+        const data = await M_DataRiwayat.findAll({
+            raw: true
+        })
         
         return {
             success: true,

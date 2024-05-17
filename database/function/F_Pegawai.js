@@ -5,7 +5,9 @@ const { F_DataSertifikat_create } = require("./F_Sertifikat")
 
 exports.F_DataPegawai_getAll = async () => {
     try {
-        const data = await M_DataPegawai.findAll()
+        const data = await M_DataPegawai.findAll({
+            raw: true
+        })
         
         return {
             success: true,
@@ -25,7 +27,7 @@ exports.F_DataPegawai_getAll = async () => {
 exports.F_DataPegawai_get = async (whereParameter) => {
     try {
 
-        const data = await M_DataPegawai.findOne({where: whereParameter})
+        const data = await M_DataPegawai.findOne({where: whereParameter, raw: true})
         
         return {
             success: true,

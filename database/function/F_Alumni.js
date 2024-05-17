@@ -2,7 +2,9 @@ const { M_DataAlumni } = require("../model/M_Alumni")
 
 exports.F_DataAlumni_getAll = async () => {
     try {
-        const data = await M_DataAlumni.findAll()
+        const data = await M_DataAlumni.findAll({
+            raw: true
+        })
 
         return {
             success: true,

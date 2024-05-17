@@ -4,7 +4,9 @@ const { F_DataPegawai_get, F_DataPegawai_update } = require("./F_Pegawai")
 exports.F_DataProfilSekolah_get = async () => {
     try {
 
-        const data = await M_DataProfilSekolah.findOne()
+        const data = await M_DataProfilSekolah.findOne({
+            raw: true
+        })
         
         return {
             success: true,
