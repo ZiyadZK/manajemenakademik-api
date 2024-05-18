@@ -89,6 +89,6 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
     tableName: 'data_pegawai' // If table name is different from model name
   });
 
-M_DataPegawai.sync()
+M_DataPegawai.sync({ alter: true })
 
 module.exports = {M_DataPegawai}

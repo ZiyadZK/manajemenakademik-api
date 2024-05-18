@@ -28,5 +28,5 @@ const M_DataAkun = sequelize.define('data_akuns', {
     tableName: 'data_akuns' // If table name is different from model name
   });
 
-  M_DataAkun.sync()
+  M_DataAkun.sync({ alter: true })
 module.exports = {M_DataAkun}

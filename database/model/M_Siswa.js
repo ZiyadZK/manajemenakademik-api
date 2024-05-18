@@ -108,6 +108,6 @@ const M_DataSiswa = sequelize.define('data_siswa', {
     tableName: 'data_siswa' // If table name is different from model name
   });
   
-  M_DataSiswa.sync()
+  M_DataSiswa.sync({ alter: true })
 
 module.exports = {M_DataSiswa}
