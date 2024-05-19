@@ -15,10 +15,11 @@ exports.F_Akun_validateLogin = async (payload) => {
 
         
         const userdataToken = randNumber(6)
-        // const responseEmail = await sendEmail(payload.email_akun, 'Verifikasi PIN', `PIN Anda adalah ${userdataToken}`)
-        const responseEmail = {
-            success: true
-        }
+        const responseEmail = await sendEmail(payload.email_akun, 'Verifikasi PIN', `PIN Anda adalah ${userdataToken}`)
+        console.log(responseEmail)
+        // const responseEmail = {
+        //     success: true
+        // }
         if(responseEmail.success) {
             const userdata = {...data['dataValues'], userdataToken}
     

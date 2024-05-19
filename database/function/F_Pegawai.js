@@ -96,9 +96,11 @@ exports.F_DataPegawai_create = async (payload) => {
             const {sertifikat, ...dataPegawai} = payload
             await M_DataPegawai.create(dataPegawai)
 
-            const data = await this.F_DataPegawai_get({nik: dataPegawai.nik})
+            const data = await M_DataPegawai.findOne({where: {nik: dataPegawai.nik}})
+            console.log(data)
 
-            const newSertifikat = sertifikat.map(item => ({...item, sertifikat_id_pegawai: Number(data.id_pegawai), keterangan: '-'}))
+            const newSertifikat = sertifikat.map(item => ({...item, sertifikat_id_pegawai: data.id_pegawai, keterangan: '-'}))
+            console.log(newSertifikat)
 
             await F_DataSertifikat_create(newSertifikat)
 
