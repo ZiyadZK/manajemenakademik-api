@@ -1,5 +1,6 @@
 const { nanoid } = require("nanoid")
 const { M_DataKelas } = require("../model/M_Kelas")
+const { getSocketIO } = require("../../socket")
 
 exports.F_DataKelas_getAll = async () => {
     try {
@@ -79,6 +80,12 @@ exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, 
             })
         }
 
+        const io = getSocketIO()
+
+        const emit_data = await M_DataKelas.findAll()
+
+        io.emit('SIMAK_KELAS', emit_data)
+
         return {
             success: true
         }
@@ -128,6 +135,12 @@ exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nam
             })
         }
 
+        const io = getSocketIO()
+
+        const emit_data = await M_DataKelas.findAll()
+
+        io.emit('SIMAK_KELAS', emit_data)
+
 
         return {
             success: true
@@ -163,6 +176,12 @@ exports.F_DataKelas_deleteRoleKelas = async (parameter, role) => {
               where: parameter  
             })
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataKelas.findAll()
+
+        io.emit('SIMAK_KELAS', emit_data)
 
 
         return {

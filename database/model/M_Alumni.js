@@ -25,7 +25,7 @@ const M_DataAlumni = sequelize.define('data_alumni', {
     nisn: {
       type: DataTypes.STRING(200),
       allowNull: true,
-      unique: true
+      unique: 'nisn'
     },
     nik: {
       type: DataTypes.STRING(200),
@@ -112,6 +112,6 @@ const M_DataAlumni = sequelize.define('data_alumni', {
     tableName: 'data_alumni' // If table name is different from model name
   });
 
-M_DataAlumni.sync({ alter: true })
+M_DataAlumni.sync({ alter: true})
 
 module.exports = {M_DataAlumni}

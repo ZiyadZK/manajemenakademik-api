@@ -1,3 +1,4 @@
+const { getSocketIO } = require("../../socket");
 const { M_DataAlumni } = require("../model/M_Alumni");
 const { M_DataSiswa } = require("../model/M_Siswa");
 const { F_DataAlumni_create } = require("./F_Alumni");
@@ -15,6 +16,8 @@ exports.F_Siswa_get = async (filters) => {
                 raw: true
             })
         }
+
+        
 
         return {
             success: true,
@@ -62,6 +65,12 @@ exports.F_Siswa_create = async (payload) => {
         }else{
             await M_DataSiswa.create(payload)
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataSiswa.findAll()
+
+        io.emit('SIMAK_SISWA', emit_data)
         
         return {
             success: true
@@ -83,6 +92,12 @@ exports.F_Siswa_delete = async (arrayNis) => {
             }
         })
 
+        const io = getSocketIO()
+
+        const emit_data = await M_DataSiswa.findAll()
+
+        io.emit('SIMAK_SISWA', emit_data)
+
         return {
             success: true
         }
@@ -99,10 +114,16 @@ exports.F_Siswa_update = async (arrayNis, payload) => {
     try {
         console.log(arrayNis)
         if(Array.isArray(arrayNis)) {
-            arrayNis.forEach(async (value) => await M_DataSiswa.update(payload,{ where: {nis: value}}) )
+            await Promise.all(arrayNis.forEach(async (value) => await M_DataSiswa.update(payload,{ where: {nis: value}}) ))
         }else{
             await M_DataSiswa.update(payload,{ where: {nis: arrayNis}});
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataSiswa.findAll()
+
+        io.emit('SIMAK_SISWA', emit_data)
 
         return {
             success: true
@@ -121,11 +142,11 @@ exports.F_Siswa_update = async (arrayNis, payload) => {
 exports.F_Siswa_delete = async (arrayNis) => {
     try {
         if(Array.isArray(arrayNis)){
-            arrayNis.forEach(async (value) => await M_DataSiswa.destroy({
+            await Promise.all(arrayNis.forEach(async (value) => await M_DataSiswa.destroy({
                 where: {
                     nis: value
                 }
-            }) )
+            }) ))
         }else{ 
             await M_DataSiswa.destroy({
                 where: {
@@ -133,6 +154,12 @@ exports.F_Siswa_delete = async (arrayNis) => {
                 }
             })
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataSiswa.findAll()
+
+        io.emit('SIMAK_SISWA', emit_data)
 
         return {
             success: true
@@ -196,6 +223,12 @@ exports.F_Siswa_naikKelas = async (nisArrTidakNaikKelas) => {
                 await this.F_Siswa_create(newDataKelas[kelas]);
             }
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataSiswa.findAll()
+
+        io.emit('SIMAK_SISWA', emit_data)
 
         return {
             success: true

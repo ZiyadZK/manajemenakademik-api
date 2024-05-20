@@ -47,6 +47,6 @@ const M_DataRiwayat = sequelize.define('data_riwayat', {
     timestamps: false
 })
 
-M_DataRiwayat.sync({alter: true})
+M_DataRiwayat.sync({ alter: true})
 
 module.exports = {M_DataRiwayat}

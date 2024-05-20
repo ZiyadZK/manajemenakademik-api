@@ -1,6 +1,8 @@
+
 const { encryptKey } = require("../../libs/cryptor")
 const { randNumber } = require("../../libs/functions/randNumber")
 const { sendEmail } = require("../../libs/mailer")
+const { getSocketIO } = require("../../socket")
 const { M_DataAkun } = require('../model/M_Akun')
 
 exports.F_Akun_validateLogin = async (payload) => {
@@ -73,6 +75,12 @@ exports.F_Akun_create = async (payload) => {
             await M_DataAkun.create(payload)
         }
 
+        const io = getSocketIO()
+
+        const emit_dataAkun = await M_DataAkun.findAll()
+
+        io.emit('SIMAK_AKUN', emit_dataAkun)
+
         return {
             success: true
         }
@@ -88,11 +96,11 @@ exports.F_Akun_create = async (payload) => {
 exports.F_Akun_delete = async (idArr) => {
     try {
         if(Array.isArray(idArr)) {
-            idArr.forEach(async (id) => await M_DataAkun.destroy({
+            await Promise.all(idArr.map(async (id) => await M_DataAkun.destroy({
                 where: {
                     id_akun: id
                 }
-            }))
+            })))
         }else{
             await M_DataAkun.destroy({
                 where: {
@@ -100,6 +108,13 @@ exports.F_Akun_delete = async (idArr) => {
                 }
             })
         }
+
+        const io = getSocketIO()
+
+        const emit_dataAkun = await M_DataAkun.findAll()
+
+        io.emit('SIMAK_AKUN', emit_dataAkun)
+        
 
         return {
             success: true
@@ -116,6 +131,12 @@ exports.F_Akun_delete = async (idArr) => {
 exports.F_Akun_update = async (id_akun, payload) => {
     try {
         await M_DataAkun.update(payload, {where: {id_akun}})
+
+        const io = getSocketIO()
+
+        const emit_dataAkun = await M_DataAkun.findAll()
+
+        io.emit('SIMAK_AKUN', emit_dataAkun)
 
         return {
             success: true

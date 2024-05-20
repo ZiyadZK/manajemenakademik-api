@@ -22,7 +22,7 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
     nik: {
       type: DataTypes.STRING(16),
       allowNull: true,
-      unique: true
+      unique: 'nik'
     },
     nip: {
       type: DataTypes.STRING(255),
@@ -89,6 +89,5 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
     tableName: 'data_pegawai' // If table name is different from model name
   });
 
-M_DataPegawai.sync({ alter: true })
-
+M_DataPegawai.sync({ alter: true})
 module.exports = {M_DataPegawai}

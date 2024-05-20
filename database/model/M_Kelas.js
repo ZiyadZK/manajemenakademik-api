@@ -48,5 +48,4 @@ const M_DataKelas = sequelize.define('data_kelas', {
   });
 
   M_DataKelas.sync({ alter: true})
-
 module.exports = {M_DataKelas}

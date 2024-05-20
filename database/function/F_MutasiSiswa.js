@@ -1,3 +1,4 @@
+const { getSocketIO } = require("../../socket")
 const { M_DataMutasiSiswa } = require("../model/M_MutasiSiswa")
 
 exports.F_DataMutasiSiswa_create = async (payload) => {
@@ -7,6 +8,12 @@ exports.F_DataMutasiSiswa_create = async (payload) => {
         }else{
             await M_DataMutasiSiswa.create(payload)
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataMutasiSiswa.findAll()
+
+        io.emit('SIMAK_MUTASI_SISWA', emit_data)
 
         return {
             success: true
@@ -27,7 +34,9 @@ exports.F_DataMutasiSIswa_get = async (nis) => {
         const data = await M_DataMutasiSiswa.findOne({
             where: {nis},
             raw: true
-        }, )
+        })
+
+        
 
         return {
             success: true,
@@ -68,7 +77,7 @@ exports.F_DataMutasiSiswa_getAll = async () => {
 exports.F_DataMutasiSiswa_delete = async (arrayNis) => {
     try {
         if(Array.isArray(arrayNis)) {
-            arrayNis.forEach(async nis => await M_DataMutasiSiswa.destroy({where: {nis}}))
+            await Promise.all(arrayNis.forEach(async nis => await M_DataMutasiSiswa.destroy({where: {nis}})))
         }else{
             await M_DataMutasiSiswa.destroy({
                 where: {
@@ -76,6 +85,12 @@ exports.F_DataMutasiSiswa_delete = async (arrayNis) => {
                 }
             })
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataMutasiSiswa.findAll()
+
+        io.emit('SIMAK_MUTASI_SISWA', emit_data)
 
         return {
             success: true
@@ -94,14 +109,20 @@ exports.F_DataMutasiSiswa_delete = async (arrayNis) => {
 exports.F_DataMutasiSiswa_update = async (arrayNis, payload) => {
     try {
         if(Array.isArray(arrayNis)) {
-            arrayNis.forEach(async nis => await M_DataMutasiSiswa.update(payload, {
+            await Promise.all(arrayNis.forEach(async nis => await M_DataMutasiSiswa.update(payload, {
                 where: {nis}
-            }))
+            })))
         }else{
             await M_DataMutasiSiswa.update(payload, {
                 where: {nis: arrayNis}
             })
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataMutasiSiswa.findAll()
+
+        io.emit('SIMAK_MUTASI_SISWA', emit_data)
 
         return {
             success: true

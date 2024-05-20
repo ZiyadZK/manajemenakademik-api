@@ -1,3 +1,4 @@
+const { getSocketIO } = require("../../socket")
 const { M_DataIjazah } = require("../model/M_Ijazah")
 
 exports.F_DataIjazah_getAll = async () => {
@@ -29,6 +30,12 @@ exports.F_DataIjazah_create = async (payload) => {
             await M_DataIjazah.create(payload)
         }
 
+        const io = getSocketIO()
+
+        const emit_data = await M_DataIjazah.findAll()
+
+        io.emit('SIMAK_IJAZAH', emit_data)
+
         return {
             success: true
         }
@@ -46,10 +53,19 @@ exports.F_DataIjazah_create = async (payload) => {
 exports.F_DataIjazah_update = async (arrayNisn, payload) => {
     try {
         if(Array.isArray(arrayNisn)) {
-            await arrayNisn.forEach(async nisn => await M_DataIjazah.update(payload, {where: {nisn}}))
+            await Promise.all(arrayNisn.map(async nisn => {
+                await M_DataIjazah.update(payload, { where: { nisn } });
+            }));
         }else{
             await M_DataIjazah.update(payload, {where: {nisn: arrayNisn}})
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataIjazah.findAll({ raw: true })
+        // console.log(emit_data)
+
+        io.emit('SIMAK_IJAZAH', emit_data)
 
         return {
             success: true
@@ -68,10 +84,16 @@ exports.F_DataIjazah_update = async (arrayNisn, payload) => {
 exports.F_DataIjazah_delete = async (arrayNisn) => {
     try {
         if(Array.isArray(arrayNisn)) {
-            arrayNisn.forEach(async (nisn) => await M_DataIjazah.destroy({where: {nisn}}))
+            await Promise.all(arrayNisn.map(async (nisn) => await M_DataIjazah.destroy({where: {nisn}})))
         }else{
             await M_DataIjazah.destroy({where: {nisn: arrayNisn}})
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataIjazah.findAll()
+
+        io.emit('SIMAK_IJAZAH', emit_data)
 
         return {
             success: true

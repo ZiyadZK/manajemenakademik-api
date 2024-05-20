@@ -31,6 +31,6 @@ const M_DataSertifikat = sequelize.define('data_sertifikat', {
     tableName: 'data_sertifikat' // If table name is different from model name
   });
 
-  M_DataSertifikat.sync({ alter: true })
+  M_DataSertifikat.sync({ alter: true})
 
 module.exports = {M_DataSertifikat}

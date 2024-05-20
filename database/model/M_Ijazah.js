@@ -48,6 +48,6 @@ const M_DataIjazah = sequelize.define('data_ijazahs', {
     tableName: 'data_ijazahs' // If table name is different from model name
   });
 
-  M_DataIjazah.sync({ alter: true })
+  M_DataIjazah.sync({ alter: true})
 
 module.exports = {M_DataIjazah}

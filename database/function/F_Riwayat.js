@@ -1,3 +1,4 @@
+const { getSocketIO } = require("../../socket")
 const { M_DataRiwayat } = require("../model/M_Riwayat")
 
 exports.F_DataRiwayat_getAll = async () => {
@@ -51,6 +52,12 @@ exports.F_DataRiwayat_create = async (payload) => {
         }else{
             await M_DataRiwayat.create(payload)
         }
+
+        const io = getSocketIO()
+
+        const emit_data = await M_DataRiwayat.findAll()
+
+        io.emit('SIMAK_RIWAYAT', emit_data)
         
         return {
             success: true

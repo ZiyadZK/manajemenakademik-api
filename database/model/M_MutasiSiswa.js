@@ -25,7 +25,7 @@ const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
     nisn: {
       type: DataTypes.STRING(200),
       allowNull: true,
-      unique: true
+      unique: 'nisn'
     },
     nik: {
       type: DataTypes.STRING(200),
@@ -116,6 +116,6 @@ const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
     tableName: 'data_mutasi_siswa' // If table name is different from model name
   });
 
-M_DataMutasiSiswa.sync({ alter: true })
+M_DataMutasiSiswa.sync({ alter: true})
 
 module.exports = {M_DataMutasiSiswa}

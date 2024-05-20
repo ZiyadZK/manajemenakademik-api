@@ -65,7 +65,7 @@ exports.F_DataSertifikat_create = async (payload) => {
 exports.F_DataSertifikat_update = async (arraySertifikat_id, payload) => {
     try {
         if(Array.isArray(arraySertifikat_id)) {
-            arraySertifikat_id.forEach(async sertifikat_id => await M_DataSertifikat.update(payload, {where: {sertifikat_id}}))
+            await Promise.all(arraySertifikat_id.forEach(async sertifikat_id => await M_DataSertifikat.update(payload, {where: {sertifikat_id}})))
         }else{
             await M_DataSertifikat.update(payload, {where: {sertifikat_id: arraySertifikat_id}})
         }
