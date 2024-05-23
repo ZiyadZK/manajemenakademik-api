@@ -5,8 +5,9 @@ let io
 const initSocket = (server) => {
     io = new Server(server, {
         cors: {
-            origin: '*'
-        }
+            origin: "*"
+        },
+        path: '/simaksocket'
     })
 
     io.use((socket, next) => {
