@@ -5,9 +5,13 @@ let io
 const initSocket = (server) => {
     io = new Server(server, {
         cors: {
-            origin: "*"
+            origin: ['https://simak.smkpunegerijabar.sch.id', 'http://localhost:3000'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Authorization', 'api_key'],
+            credentials: true,
         },
-        path: '/simaksocket'
+        path: '/simaksocket',
+        transports: ['polling', 'websocket']
     })
 
     io.use((socket, next) => {

@@ -18,7 +18,8 @@ const { initSocket } = require('./socket')
 
 const app = express()
 const httpServer = http.createServer(app)
-const io = initSocket(httpServer)
+
+initSocket(httpServer)
 
 app.use(cors())
 app.use(cookieParser())
