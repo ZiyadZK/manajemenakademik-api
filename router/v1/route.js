@@ -1529,6 +1529,7 @@ const route_v1 = express.Router()
         const id_pegawai = await req.body.id_pegawai
         const nama_pegawai = await req.body.nama_pegawai
         const nik_pegawai = await req.body.nik_pegawai
+        const email_pegawai = await req.body.email_pegawai
 
         if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
             return res.status(400).json({
@@ -1542,7 +1543,7 @@ const route_v1 = express.Router()
             })
         }
 
-        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({
@@ -1575,7 +1576,7 @@ const route_v1 = express.Router()
         const id_pegawai = await req.body.id_pegawai
         const nama_pegawai = await req.body.nama_pegawai
         const nik_pegawai = await req.body.nik_pegawai
-        console.log(req.body)
+        const email_pegawai = await req.body.email_pegawai
 
         if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
             return res.status(400).json({
@@ -1589,7 +1590,7 @@ const route_v1 = express.Router()
             })
         }
 
-        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({
@@ -1620,6 +1621,7 @@ const route_v1 = express.Router()
         const id_pegawai = await req.body.id_pegawai
         const nama_pegawai = await req.body.nama_pegawai
         const nik_pegawai = await req.body.nik_pegawai
+        const email_pegawai = await req.body.email_pegawai
 
         if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
             return res.status(400).json({
@@ -1633,7 +1635,7 @@ const route_v1 = express.Router()
             })
         }
 
-        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({
@@ -1664,6 +1666,7 @@ const route_v1 = express.Router()
         const id_pegawai = await req.body.id_pegawai
         const nama_pegawai = await req.body.nama_pegawai
         const nik_pegawai = await req.body.nik_pegawai
+        const email_pegawai = await req.body.email_pegawai
 
         if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
             return res.status(400).json({
@@ -1677,7 +1680,7 @@ const route_v1 = express.Router()
             })
         }
 
-        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai)
+        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({

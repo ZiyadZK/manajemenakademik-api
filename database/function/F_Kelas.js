@@ -44,20 +44,20 @@ exports.F_DataKelas_get = async (kelas, rombel, no_rombel) => {
     }
 }
 
-exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik) => {
+exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik, email_walikelas) => {
     try {
         const isExist = await M_DataKelas.findOne({
             where: {
                 kelas, rombel, no_rombel
             }
         })
-        console.log(isExist)
 
         if(isExist) {
             await M_DataKelas.update({
                 id_walikelas: id_pegawai,
                 nama_walikelas: nama_pegawai,
                 nik_walikelas: nik,
+                email_walikelas
             }, {
                 where: {
                     kelas, 
@@ -71,6 +71,7 @@ exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, 
                 id_walikelas: id_pegawai,
                 nama_walikelas: nama_pegawai,
                 nik_walikelas: nik,
+                email_walikelas,
                 id_guru_bk: '',
                 nama_guru_bk: '',
                 nik_guru_bk: '',
@@ -100,7 +101,7 @@ exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, 
     }
 }
 
-exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik) => {
+exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik, email_guru_bk) => {
     try {
         const isExist = await M_DataKelas.findOne({
             where: {
@@ -113,6 +114,7 @@ exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nam
                 id_guru_bk: id_pegawai,
                 nama_guru_bk: nama_pegawai,
                 nik_guru_bk: nik,
+                email_guru_bk
             }, {
                 where: {
                     kelas, 
@@ -128,6 +130,7 @@ exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nam
                 nik_walikelas: '',
                 id_guru_bk: id_pegawai,
                 nama_guru_bk: nama_pegawai,
+                email_guru_bk,
                 nik_guru_bk: nik,
                 kelas,
                 rombel,
