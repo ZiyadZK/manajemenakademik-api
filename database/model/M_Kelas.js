@@ -30,6 +30,10 @@ const M_DataKelas = sequelize.define('data_kelas', {
       type: DataTypes.STRING,
       allowNull: false
     },
+    email_walikelas: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
     id_guru_bk: {
       type: DataTypes.STRING,
       allowNull: true
@@ -40,6 +44,10 @@ const M_DataKelas = sequelize.define('data_kelas', {
     },
     nik_guru_bk: {
       type: DataTypes.STRING,
+      allowNull: true
+    },
+    email_guru_bk: {
+      type: DataTypes.STRING(100),
       allowNull: true
     }
   }, {
