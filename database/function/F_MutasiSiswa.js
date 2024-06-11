@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const { getSocketIO } = require("../../socket")
 const { M_DataMutasiSiswa } = require("../model/M_MutasiSiswa")
 
@@ -35,8 +36,6 @@ exports.F_DataMutasiSIswa_get = async (nis) => {
             where: {nis},
             raw: true
         })
-
-        
 
         return {
             success: true,
@@ -77,7 +76,13 @@ exports.F_DataMutasiSiswa_getAll = async () => {
 exports.F_DataMutasiSiswa_delete = async (arrayNis) => {
     try {
         if(Array.isArray(arrayNis)) {
-            await Promise.all(arrayNis.forEach(async nis => await M_DataMutasiSiswa.destroy({where: {nis}})))
+            await M_DataMutasiSiswa.destroy({
+                where: {
+                    nis: {
+                        [Op.in]: arrayNis
+                    }
+                }
+            })
         }else{
             await M_DataMutasiSiswa.destroy({
                 where: {
@@ -109,9 +114,13 @@ exports.F_DataMutasiSiswa_delete = async (arrayNis) => {
 exports.F_DataMutasiSiswa_update = async (arrayNis, payload) => {
     try {
         if(Array.isArray(arrayNis)) {
-            await Promise.all(arrayNis.forEach(async nis => await M_DataMutasiSiswa.update(payload, {
-                where: {nis}
-            })))
+            await M_DataMutasiSiswa.update(payload, {
+                where: {
+                    nis: {
+                        [Op.in]: arrayNis
+                    }
+                }
+            })
         }else{
             await M_DataMutasiSiswa.update(payload, {
                 where: {nis: arrayNis}

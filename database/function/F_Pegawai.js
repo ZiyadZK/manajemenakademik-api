@@ -3,6 +3,7 @@ const { M_DataPegawai } = require("../model/M_Pegawai")
 const { M_DataSertifikat } = require("../model/M_Sertifikat")
 const { F_DataSertifikat_create } = require("./F_Sertifikat")
 const { getSocketIO } = require("../../socket")
+const { Op } = require("sequelize")
 
 exports.F_DataPegawai_getAll = async () => {
     try {
@@ -49,7 +50,13 @@ exports.F_DataPegawai_update = async (arrayId_pegawai, payload) => {
     try {
 
         if(Array.isArray(arrayId_pegawai)) {
-            await Promise.all(arrayId_pegawai.forEach(async id_pegawai => await M_DataPegawai.update(payload, {where: {id_pegawai}})))
+            await M_DataPegawai.update(payload, {
+                where: {
+                    id_pegawai:{
+                        [Op.in]: arrayId_pegawai
+                    }
+                }
+            })
         }else{
             await M_DataPegawai.update(payload, {where: {id_pegawai: arrayId_pegawai}})
         }
@@ -78,7 +85,13 @@ exports.F_DataPegawai_delete = async (arrayId_pegawai) => {
     try {
 
         if(Array.isArray(arrayId_pegawai)) {
-            await Promise.all(arrayId_pegawai.forEach(async id_pegawai => await M_DataPegawai.destroy({where: {id_pegawai}})))
+            await M_DataPegawai.destroy({
+                where: {
+                    id_pegawai: {
+                        [Op.in]: arrayId_pegawai
+                    }
+                }
+            })
         }else{
             await M_DataPegawai.destroy({where: {id_pegawai: arrayId_pegawai}})
         }

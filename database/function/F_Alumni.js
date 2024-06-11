@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const { getSocketIO } = require("../../socket")
 const { M_DataAlumni } = require("../model/M_Alumni")
 
@@ -25,7 +26,13 @@ exports.F_DataAlumni_getAll = async () => {
 exports.F_DataAlumni_delete = async (arrayNis) => {
     try {
         if(Array.isArray(arrayNis)) {
-            await Promise.all(arrayNis.map(async nis => await M_DataAlumni.destroy({where: {nis}})))
+            await M_DataAlumni.destroy({
+                where: {
+                    nis: {
+                        [Op.in]: arrayNis
+                    }
+                }
+            })
         }else{
             await M_DataAlumni.destroy({where: {nis: arrayNis}})
         }
@@ -53,7 +60,13 @@ exports.F_DataAlumni_delete = async (arrayNis) => {
 exports.F_DataAlumni_update = async (arrayNis, payload) => {
     try {
         if(Array.isArray(arrayNis)) {
-            await Promise.all(arrayNis.forEach(async nis => await M_DataAlumni.update(payload, {where: {nis}})))
+            await M_DataAlumni.update(payload, {
+                where: {
+                    nis: {
+                        [Op.in]: arrayNis
+                    }
+                }
+            })
         }else{
             M_DataAlumni.update(payload, {where: {nis: arrayNis}})
         }

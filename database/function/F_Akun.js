@@ -1,4 +1,5 @@
 
+const { Op } = require("sequelize")
 const { encryptKey } = require("../../libs/cryptor")
 const { randNumber } = require("../../libs/functions/randNumber")
 const { sendEmail } = require("../../libs/mailer")
@@ -96,11 +97,13 @@ exports.F_Akun_create = async (payload) => {
 exports.F_Akun_delete = async (idArr) => {
     try {
         if(Array.isArray(idArr)) {
-            await Promise.all(idArr.map(async (id) => await M_DataAkun.destroy({
+            M_DataAkun.destroy({
                 where: {
-                    id_akun: id
+                    id_akun: {
+                        [Op.in]: idArr
+                    }
                 }
-            })))
+            })
         }else{
             await M_DataAkun.destroy({
                 where: {

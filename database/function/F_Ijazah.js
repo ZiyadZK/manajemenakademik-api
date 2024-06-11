@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const { getSocketIO } = require("../../socket")
 const { M_DataIjazah } = require("../model/M_Ijazah")
 
@@ -53,9 +54,13 @@ exports.F_DataIjazah_create = async (payload) => {
 exports.F_DataIjazah_update = async (arrayNisn, payload) => {
     try {
         if(Array.isArray(arrayNisn)) {
-            await Promise.all(arrayNisn.map(async nisn => {
-                await M_DataIjazah.update(payload, { where: { nisn } });
-            }));
+            await M_DataIjazah.update(payload, {
+                where: {
+                    nisn: {
+                        [Op.in]: arrayNisn
+                    }
+                }
+            })
         }else{
             await M_DataIjazah.update(payload, {where: {nisn: arrayNisn}})
         }
@@ -84,7 +89,13 @@ exports.F_DataIjazah_update = async (arrayNisn, payload) => {
 exports.F_DataIjazah_delete = async (arrayNisn) => {
     try {
         if(Array.isArray(arrayNisn)) {
-            await Promise.all(arrayNisn.map(async (nisn) => await M_DataIjazah.destroy({where: {nisn}})))
+            await M_DataIjazah.destroy({
+                where: {
+                    nisn: {
+                        [Op.in]: arrayNisn
+                    }
+                }
+            })
         }else{
             await M_DataIjazah.destroy({where: {nisn: arrayNisn}})
         }

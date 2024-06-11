@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { getSocketIO } = require("../../socket");
 const { M_DataAlumni } = require("../model/M_Alumni");
 const { M_DataSiswa } = require("../model/M_Siswa");
@@ -112,9 +113,14 @@ exports.F_Siswa_delete = async (arrayNis) => {
 
 exports.F_Siswa_update = async (arrayNis, payload) => {
     try {
-        console.log(arrayNis)
         if(Array.isArray(arrayNis)) {
-            await Promise.all(arrayNis.forEach(async (value) => await M_DataSiswa.update(payload,{ where: {nis: value}}) ))
+            await M_DataSiswa.update(payload, {
+                where: {
+                    nis: {
+                        [Op.in]: arrayNis
+                    }
+                }
+            })
         }else{
             await M_DataSiswa.update(payload,{ where: {nis: arrayNis}});
         }
@@ -142,11 +148,13 @@ exports.F_Siswa_update = async (arrayNis, payload) => {
 exports.F_Siswa_delete = async (arrayNis) => {
     try {
         if(Array.isArray(arrayNis)){
-            await Promise.all(arrayNis.forEach(async (value) => await M_DataSiswa.destroy({
+            await M_DataSiswa.destroy({
                 where: {
-                    nis: value
+                    nis: {
+                        [Op.in]: arrayNis
+                    }
                 }
-            }) ))
+            })
         }else{ 
             await M_DataSiswa.destroy({
                 where: {
