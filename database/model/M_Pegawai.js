@@ -11,6 +11,10 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
       type: DataTypes.STRING(255),
       allowNull: true
     },
+    email_pegawai: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
     jabatan: {
       type: DataTypes.STRING(255),
       allowNull: true
