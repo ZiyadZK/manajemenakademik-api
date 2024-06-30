@@ -11,6 +11,7 @@ const { F_DataSertifikat_get, F_DataSertifikat_getAll, F_DataSertifikat_create, 
 const { F_DataMutasiSiswa_getAll, F_DataMutasiSiswa_create, F_DataMutasiSiswa_update, F_DataMutasiSiswa_delete, F_DataMutasiSIswa_get } = require('../../database/function/F_MutasiSiswa')
 const { F_DataKelas_getAll, F_DataKelas_get, F_DataKelas_setWaliKelas, F_DataKelas_setGuruBK, F_DataKelas_deleteWaliKelas, F_DataKelas_deleteGuruBK, F_DataKelas_deleteRoleKelas } = require('../../database/function/F_Kelas')
 const { F_DataRiwayat_getAll, F_DataRiwayat_get, F_DataRiwayat_create } = require('../../database/function/F_Riwayat')
+const { F_Pendidikan_Pegawai_getAll } = require('../../database/function/F_Pendidikan_Pegawai')
 
 const errorHandler = (response) => ({
     error: 'Terdapat error dalam server, silahkan cek log server!',
@@ -1811,6 +1812,31 @@ const route_v1 = express.Router()
         if(responseData.success) {
             return res.status(200).json({
                 success: `Berhasil membuat log aktivitas`
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+// DATA PENDIDIKAN PEGAWAI
+.get('/v1/data/pendidikanpegawai', async (req, res) => {
+    try {
+
+        const responseData = await F_Pendidikan_Pegawai_getAll()
+        if(responseData.success) {
+            return res.status(200).json({
+                data: responseData.data
             })
         }
 

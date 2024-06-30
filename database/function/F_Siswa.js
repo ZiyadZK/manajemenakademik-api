@@ -3,6 +3,7 @@ const { getSocketIO } = require("../../socket");
 const { M_DataAlumni } = require("../model/M_Alumni");
 const { M_DataSiswa } = require("../model/M_Siswa");
 const { F_DataAlumni_create } = require("./F_Alumni");
+const { date_getYear, date_getMonth, date_getDay } = require("../../libs/date");
 
 exports.F_Siswa_get = async (filters) => {
     try {
@@ -93,12 +94,6 @@ exports.F_Siswa_delete = async (arrayNis) => {
             }
         })
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataSiswa.findAll()
-
-        io.emit('SIMAK_SISWA', emit_data)
-
         return {
             success: true
         }
@@ -124,12 +119,6 @@ exports.F_Siswa_update = async (arrayNis, payload) => {
         }else{
             await M_DataSiswa.update(payload,{ where: {nis: arrayNis}});
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataSiswa.findAll()
-
-        io.emit('SIMAK_SISWA', emit_data)
 
         return {
             success: true
@@ -163,12 +152,6 @@ exports.F_Siswa_delete = async (arrayNis) => {
             })
         }
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataSiswa.findAll()
-
-        io.emit('SIMAK_SISWA', emit_data)
-
         return {
             success: true
         }
@@ -185,58 +168,43 @@ exports.F_Siswa_delete = async (arrayNis) => {
 
 exports.F_Siswa_naikKelas = async (nisArrTidakNaikKelas) => {
     try {
-        const dataSiswa = await M_DataSiswa.findAll();
-
-        let dataAlumni = [];
-        let newDataKelas = {};
-
-        dataSiswa.forEach(siswa => {
-            const updatedSiswa = siswa.dataValues;
-            const siswaTidakNaik = nisArrTidakNaikKelas.find(siswaTidakNaik => siswaTidakNaik['nis'] === updatedSiswa['nis']);
-            
-            const newData = {
-                ...updatedSiswa,
-                tahun_keluar: (new Date()).getFullYear().toString(),
-                tanggal_keluar: new Date().toLocaleDateString('en-GB')
-            };
-
-            if (siswaTidakNaik) {
-                newDataKelas[updatedSiswa.kelas] = newDataKelas[updatedSiswa.kelas] || [];
-                newDataKelas[updatedSiswa.kelas].push(newData);
-            } else {
-                if (updatedSiswa.kelas === 'XII') {
-                    dataAlumni.push(newData);
-                } else {
-                    const nextClass = {
-                        'X': 'XI',
-                        'XI': 'XII'
-                    };
-                    newData.kelas = nextClass[updatedSiswa.kelas];
-                    newDataKelas[newData.kelas] = newDataKelas[newData.kelas] || [];
-                    newDataKelas[newData.kelas].push(newData);
-                }
+        const dataCalonAlumni = await M_DataSiswa.findAll({
+            where: {
+                nis: {
+                    [Op.notIn]: nisArrTidakNaikKelas
+                },
+                kelas: 'XII'
             }
-        });
+        })
 
-        // Create data alumni
-        await F_DataAlumni_create(dataAlumni);
-
-        // Clear all the siswa
-        await M_DataSiswa.truncate();
-
-        // Insert the new data siswa
-        for (const kelas in newDataKelas) {
-            if (newDataKelas.hasOwnProperty(kelas)) {
-                console.log(newDataKelas[kelas].length);
-                await this.F_Siswa_create(newDataKelas[kelas]);
+        await M_DataSiswa.destroy({
+            where: {
+                nis: {
+                    [Op.notIn]: nisArrTidakNaikKelas
+                },
+                kelas: 'XII'
             }
-        }
+        })
 
-        const io = getSocketIO()
+        await M_DataSiswa.update({ kelas: 'XII' },{
+            where: {
+                nis: {
+                    [Op.notIn]: nisArrTidakNaikKelas
+                },
+                kelas: 'XI'
+            }
+        })
 
-        const emit_data = await M_DataSiswa.findAll()
+        await M_DataSiswa.update({ kelas: 'XI'}, {
+            where: {
+                nis: {
+                    [Op.notIn]: nisArrTidakNaikKelas
+                },
+                kelas: 'X'
+            }
+        })
 
-        io.emit('SIMAK_SISWA', emit_data)
+        await M_DataAlumni.bulkCreate(dataCalonAlumni.map(value => ({...value, tahun_keluar: date_getYear(), tanggal_keluar: `${date_getYear()}-${date_getMonth()}-${date_getDay()}`})))
 
         return {
             success: true

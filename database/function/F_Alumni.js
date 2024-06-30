@@ -37,12 +37,6 @@ exports.F_DataAlumni_delete = async (arrayNis) => {
             await M_DataAlumni.destroy({where: {nis: arrayNis}})
         }
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataAlumni.findAll()
-
-        io.emit('SIMAK_ALUMNI', emit_data)
-
         return {
             success: true
         }
@@ -70,12 +64,6 @@ exports.F_DataAlumni_update = async (arrayNis, payload) => {
         }else{
             M_DataAlumni.update(payload, {where: {nis: arrayNis}})
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataAlumni.findAll()
-
-        io.emit('SIMAK_ALUMNI', emit_data)
         
         return {
             success: true
@@ -121,12 +109,6 @@ exports.F_DataAlumni_create = async (payload) => {
         }else{
             await M_DataAlumni.create(payload)
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataAlumni.findAll()
-
-        io.emit('SIMAK_ALUMNI', emit_data)
 
         return {
             success: true

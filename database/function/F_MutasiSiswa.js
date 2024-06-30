@@ -10,12 +10,6 @@ exports.F_DataMutasiSiswa_create = async (payload) => {
             await M_DataMutasiSiswa.create(payload)
         }
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataMutasiSiswa.findAll()
-
-        io.emit('SIMAK_MUTASI_SISWA', emit_data)
-
         return {
             success: true
         }
@@ -91,12 +85,6 @@ exports.F_DataMutasiSiswa_delete = async (arrayNis) => {
             })
         }
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataMutasiSiswa.findAll()
-
-        io.emit('SIMAK_MUTASI_SISWA', emit_data)
-
         return {
             success: true
         }
@@ -126,12 +114,6 @@ exports.F_DataMutasiSiswa_update = async (arrayNis, payload) => {
                 where: {nis: arrayNis}
             })
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataMutasiSiswa.findAll()
-
-        io.emit('SIMAK_MUTASI_SISWA', emit_data)
 
         return {
             success: true

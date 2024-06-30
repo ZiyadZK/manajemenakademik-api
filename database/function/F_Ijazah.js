@@ -31,12 +31,6 @@ exports.F_DataIjazah_create = async (payload) => {
             await M_DataIjazah.create(payload)
         }
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataIjazah.findAll()
-
-        io.emit('SIMAK_IJAZAH', emit_data)
-
         return {
             success: true
         }

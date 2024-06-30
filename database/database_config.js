@@ -6,6 +6,9 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     logging: false
 })
 
-sequelize.sync()
+sequelize.sync().then(() => {
+    console.log('Database and all table has synced!')
+})
+
 
 module.exports = {sequelize}

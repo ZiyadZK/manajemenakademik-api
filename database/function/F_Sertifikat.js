@@ -1,15 +1,33 @@
 const { Op } = require("sequelize")
-const { M_DataSertifikat } = require("../model/M_Sertifikat")
+const { M_Sertifikat_Pegawai } = require("../model/M_Sertifikat_Pegawai")
+const { M_DataPegawai } = require("../model/M_Pegawai")
 
 exports.F_DataSertifikat_getAll = async () => {
     try {
-        const data = await M_DataSertifikat.findAll({
-            raw: true
+        const data = await M_Sertifikat_Pegawai.findAll({
+            raw: true,
+            include: [
+                {
+                    model: M_DataPegawai
+                }
+            ]
         })
+
+        const formattedData = data.map(value => ({
+            id_pegawai: value['fk_sertifikat_id_pegawai'],
+            nama_pegawai: value['data_pegawai.nama_pegawai'],
+            jabatan: value['data_pegawai.jabatan'],
+            status_kepegawaian: value['data_pegawai.status_kepegawaian'],
+            nama_sertifikat: value['nama_sertifikat'],
+            jenis_sertifikat: value['jenis_sertifikat'],
+            fileUrl: value['fileUrl'],
+            createdAt: value['createdAt'],
+            updatedAt: value['updatedAt']
+        }))
 
         return {
             success: true,
-            data
+            data: formattedData
         }
     } catch (error) {
         console.log(error.message)
@@ -24,7 +42,7 @@ exports.F_DataSertifikat_getAll = async () => {
 
 exports.F_DataSertifikat_get = async (id_pegawai) => {
     try {
-        const data = await M_DataSertifikat.findAll({where: {sertifikat_id_pegawai: id_pegawai}})
+        const data = await M_Sertifikat_Pegawai.findAll({where: {sertifikat_id_pegawai: id_pegawai}})
         
         return {
             success: true,
@@ -44,9 +62,9 @@ exports.F_DataSertifikat_get = async (id_pegawai) => {
 exports.F_DataSertifikat_create = async (payload) => {
     try {
         if(Array.isArray(payload)) {
-            await M_DataSertifikat.bulkCreate(payload)
+            await M_Sertifikat_Pegawai.bulkCreate(payload)
         }else{
-            await M_DataSertifikat.create(payload)
+            await M_Sertifikat_Pegawai.create(payload)
         }
         
         return {
@@ -66,7 +84,7 @@ exports.F_DataSertifikat_create = async (payload) => {
 exports.F_DataSertifikat_update = async (arraySertifikat_id, payload) => {
     try {
         if(Array.isArray(arraySertifikat_id)) {
-            await M_DataSertifikat.update(payload, {
+            await M_Sertifikat_Pegawai.update(payload, {
                 where: {
                     sertifikat_id: {
                         [Op.in]: arraySertifikat_id
@@ -74,7 +92,7 @@ exports.F_DataSertifikat_update = async (arraySertifikat_id, payload) => {
                 }
             })
         }else{
-            await M_DataSertifikat.update(payload, {where: {sertifikat_id: arraySertifikat_id}})
+            await M_Sertifikat_Pegawai.update(payload, {where: {sertifikat_id: arraySertifikat_id}})
         }
         
         return {
@@ -94,7 +112,7 @@ exports.F_DataSertifikat_update = async (arraySertifikat_id, payload) => {
 exports.F_DataSertifikat_delete = async (arraySertifikat_id) => {
     try {
         if(Array.isArray(arraySertifikat_id)) {
-            await M_DataSertifikat.destroy({
+            await M_Sertifikat_Pegawai.destroy({
                 where: {
                     sertifikat_id: {
                         [Op.in]: arraySertifikat_id
@@ -102,7 +120,7 @@ exports.F_DataSertifikat_delete = async (arraySertifikat_id) => {
                 }
             })
         }else{
-            await M_DataSertifikat.destroy({where: {sertifikat_id: arraySertifikat_id}})
+            await M_Sertifikat_Pegawai.destroy({where: {sertifikat_id: arraySertifikat_id}})
         }
         
         return {
