@@ -17,9 +17,9 @@ const { validateApiKey, validateEmptyBody } = require('./middleware')
 const { initSocket } = require('./socket')
 
 const app = express()
-const httpServer = http.createServer(app)
+// const httpServer = http.createServer(app)
 
-initSocket(httpServer)
+// initSocket(httpServer)
 
 app.use(cors())
 app.use(cookieParser())
@@ -40,6 +40,6 @@ const port = process.env.PORT || 8080
 app.use('/simak', validateApiKey, route_v1)
 
 
-httpServer.listen(port, () => {
+app.listen(port, () => {
     console.log(`Server is listening on port ${port}`)
 })
