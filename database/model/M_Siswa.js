@@ -6,11 +6,11 @@ const M_DataSiswa = sequelize.define('data_siswa', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    rombel: {
+    jurusan: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    no_rombel: {
+    rombel: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
@@ -51,7 +51,7 @@ const M_DataSiswa = sequelize.define('data_siswa', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    status_dalam_keluarga: {
+    jumlah_saudara: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
@@ -87,7 +87,11 @@ const M_DataSiswa = sequelize.define('data_siswa', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    telp_ortu: {
+    telp_ayah: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    telp_ibu: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
@@ -98,16 +102,11 @@ const M_DataSiswa = sequelize.define('data_siswa', {
     pekerjaan_ibu: {
       type: DataTypes.STRING(200),
       allowNull: true
-    },
-    aktif: {
-      type: DataTypes.STRING(200),
-      allowNull: true
     }
   }, {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_siswa' // If table name is different from model name
   });
-  
-  M_DataSiswa.sync({ alter: true})
+
 
 module.exports = {M_DataSiswa}

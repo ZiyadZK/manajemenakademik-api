@@ -55,6 +55,4 @@ const M_DataProfilSekolah = sequelize.define('data_profil_sekolah', {
     tableName: 'data_profil_sekolah' // If table name is different from model name
   });
 
-  M_DataProfilSekolah.sync({ alter: true})
-
 module.exports = {M_DataProfilSekolah}

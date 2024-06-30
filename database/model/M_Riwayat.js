@@ -15,19 +15,11 @@ const M_DataRiwayat = sequelize.define('data_riwayat', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    username: {
-        type: DataTypes.STRING,
+    fk_riwayat_id_akun: {
+        type: DataTypes.INTEGER(4),
         allowNull: true
     },
     keterangan: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    nama: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    email: {
         type: DataTypes.STRING,
         allowNull: true
     },
@@ -46,7 +38,5 @@ const M_DataRiwayat = sequelize.define('data_riwayat', {
 }, {
     timestamps: false
 })
-
-M_DataRiwayat.sync({ alter: true})
 
 module.exports = {M_DataRiwayat}

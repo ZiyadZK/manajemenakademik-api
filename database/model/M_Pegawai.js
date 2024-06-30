@@ -1,5 +1,9 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
+const { M_Pendidikan_Pegawai } = require("./M_Pendidikan_Pegawai");
+const { M_DataAkun } = require("./M_Akun");
+const { M_Sertifikat_Pegawai } = require("./M_Sertifikat_Pegawai");
+const { M_DataKelas } = require("./M_Kelas");
 
 const M_DataPegawai = sequelize.define('data_pegawai', {
     id_pegawai: {
@@ -40,52 +44,12 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    tgl_lahir: {
+    tanggal_lahir: {
       type: DataTypes.STRING(255),
       allowNull: true
     },
     tmt: {
       type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    pendidikan_terakhir: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    sekolah_pendidikan: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    sarjana_universitas: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    sarjana_fakultas: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    sarjana_prodi: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    magister_universitas: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    magister_fakultas: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    magister_prodi: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    keterangan: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    pensiun: {
-      type: DataTypes.BOOLEAN,
       allowNull: true
     }
   }, {
@@ -93,5 +57,19 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
     tableName: 'data_pegawai' // If table name is different from model name
   });
 
-M_DataPegawai.sync({ alter: true})
+M_DataPegawai.hasMany(M_Pendidikan_Pegawai, { foreignKey: 'fk_pendidikan_id_pegawai', sourceKey: 'id_pegawai', as: 'daftar_pendidikan', onDelete: 'CASCADE'})
+M_Pendidikan_Pegawai.belongsTo(M_DataPegawai, { foreignKey: 'fk_pendidikan_id_pegawai', targetKey: 'id_pegawai'})
+
+M_DataPegawai.hasOne(M_DataAkun, { foreignKey: 'fk_akun_id_pegawai', as: 'akun', onDelete: 'CASCADE'})
+M_DataAkun.belongsTo(M_DataPegawai, { foreignKey: 'fk_akun_id_pegawai', targetKey: 'id_pegawai'})
+
+M_DataPegawai.hasMany(M_Sertifikat_Pegawai, { foreignKey: 'fk_sertifikat_id_pegawai', sourceKey: 'id_pegawai', as: 'daftar_sertifikat', onDelete: 'CASCADE'})
+M_Sertifikat_Pegawai.belongsTo(M_DataPegawai, { foreignKey: 'fk_sertifikat_id_pegawai', targetKey: 'id_pegawai'})
+
+M_DataPegawai.hasMany(M_DataKelas, { foreignKey: 'fk_walikelas_id_pegawai', sourceKey: 'id_pegawai', as: 'wali_kelas', onDelete: 'SET NULL'})
+M_DataKelas.belongsTo(M_DataPegawai, { foreignKey: 'fk_walikelas_id_pegawai', targetKey: 'id_pegawai'})
+
+M_DataPegawai.hasMany(M_DataKelas, { foreignKey: 'fk_gurubk_id_pegawai', sourceKey: 'id_pegawai', as: 'gurubk_kelas', onDelete: 'SET NULL'})
+M_DataKelas.belongsTo(M_DataPegawai, { foreignKey: 'fk_gurubk_id_pegawai', targetKey: 'id_pegawai'})
+
 module.exports = {M_DataPegawai}

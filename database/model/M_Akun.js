@@ -3,30 +3,30 @@ const { sequelize } = require("../database_config");
 
 const M_DataAkun = sequelize.define('data_akuns', {
     id_akun: {
-      type: DataTypes.STRING(200),
-      primaryKey: true
+      type: DataTypes.INTEGER(3),
+      primaryKey: true,
+      allowNull: false
     },
-    email_akun: {
-      type: DataTypes.STRING(200),
-      allowNull: true,
-      unique: 'email_akun'
+    fk_akun_id_pegawai: {
+      type: DataTypes.INTEGER(3),
+      allowNull: false,
+      references: {
+        model: 'data_pegawai',
+        key: 'id_pegawai'
+      }
     },
     password_akun: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    nama_akun: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(20),
       allowNull: true
     },
     role_akun: {
-      type: DataTypes.STRING(200),
-      allowNull: true
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      defaultValue: 'Operator'
     }
   }, {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_akuns' // If table name is different from model name
-  });
+});
 
-  M_DataAkun.sync({ alter: true})
 module.exports = {M_DataAkun}

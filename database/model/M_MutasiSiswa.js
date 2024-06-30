@@ -6,11 +6,11 @@ const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    rombel: {
+    jurusan: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    no_rombel: {
+    rombel: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
@@ -51,7 +51,7 @@ const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    status_dalam_keluarga: {
+    jumlah_saudara: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
@@ -95,7 +95,11 @@ const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    telp_ortu: {
+    telp_ayah: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    telp_ibu: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
@@ -116,6 +120,5 @@ const M_DataMutasiSiswa = sequelize.define('data_mutasi_siswa', {
     tableName: 'data_mutasi_siswa' // If table name is different from model name
   });
 
-M_DataMutasiSiswa.sync({ alter: true})
 
 module.exports = {M_DataMutasiSiswa}

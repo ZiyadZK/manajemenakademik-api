@@ -10,50 +10,33 @@ const M_DataKelas = sequelize.define('data_kelas', {
       type: DataTypes.STRING,
       allowNull: false
     },
+    jurusan: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     rombel: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    no_rombel: {
-      type: DataTypes.STRING,
-      allowNull: false
+    fk_walikelas_id_pegawai: {
+      type: DataTypes.INTEGER(3),
+      allowNull: true,
+      references: {
+        model: 'data_pegawai',
+        key: 'id_pegawai'
+      }
     },
-    id_walikelas: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    nama_walikelas: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    nik_walikelas: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    email_walikelas: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    id_guru_bk: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    nama_guru_bk: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    nik_guru_bk: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    email_guru_bk: {
-      type: DataTypes.STRING(100),
-      allowNull: true
+    fk_gurubk_id_pegawai: {
+      type: DataTypes.INTEGER(3),
+      allowNull: true,
+      references: {
+        model: 'data_pegawai',
+        key: 'id_pegawai'
+      }
     }
   }, {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_kelas' // If table name is different from model name
   });
 
-  M_DataKelas.sync({ alter: true})
 module.exports = {M_DataKelas}
