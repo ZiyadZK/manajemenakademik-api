@@ -39,6 +39,12 @@ const port = process.env.PORT || 8080
 
 app.use('/simak', validateApiKey, route_v1)
 
+app.use((req, res, next) => {
+    return res.status(404).json({
+        message: 'Route tidak ditemukan!'
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`)

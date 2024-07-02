@@ -5,7 +5,7 @@ const M_DataAkun = sequelize.define('data_akuns', {
     id_akun: {
       type: DataTypes.INTEGER(3),
       primaryKey: true,
-      allowNull: false
+      autoIncrement: true
     },
     fk_akun_id_pegawai: {
       type: DataTypes.INTEGER(3),
