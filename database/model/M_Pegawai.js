@@ -51,6 +51,15 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
     tmt: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    keterangan: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    pensiun: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false
     }
   }, {
     timestamps: false, // If you don't want timestamps

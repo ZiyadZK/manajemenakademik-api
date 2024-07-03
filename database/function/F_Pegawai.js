@@ -49,6 +49,8 @@ exports.F_DataPegawai_getAll = async () => {
                 tmpt_lahir: data.find(value => value['id_pegawai'] === id_pegawai)['tmpt_lahir'],
                 tanggal_lahir: data.find(value => value['id_pegawai'] === id_pegawai)['tanggal_lahir'],
                 tmt: data.find(value => value['id_pegawai'] === id_pegawai)['tmt'],
+                keterangan: data.find(value => value['id_pegawai'] === id_pegawai)['keterangan'],
+                pensiun: data.find(value => value['id_pegawai'] === id_pegawai)['pensiun'] ? true : false,
                 daftar_sertifikat: Array.from(new Set(data.filter(value => value['id_pegawai'] === id_pegawai && value['daftar_sertifikat.fk_sertifikat_id_pegawai'] === id_pegawai).map(value => value['daftar_sertifikat.no']))).length > 0 ? Array.from(new Set(data.filter(value => value['id_pegawai'] === id_pegawai).map(value => value['daftar_sertifikat.no']))).map(no_sertifikat => ({
                     nama_sertifikat: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.nama_sertifikat'],
                     jenis_sertifikat: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.jenis_sertifikat'],
@@ -121,12 +123,6 @@ exports.F_DataPegawai_update = async (arrayId_pegawai, payload) => {
         }else{
             await M_DataPegawai.update(payload, {where: {id_pegawai: arrayId_pegawai}})
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataPegawai.findAll()
-
-        io.emit('SIMAK_PEGAWAI', emit_data)
         
         return {
             success: true
@@ -173,7 +169,7 @@ exports.F_DataPegawai_delete = async (arrayId_pegawai) => {
 
 exports.F_DataPegawai_create = async (payload) => {
     try {
-        if(Array.isArray(payload) === false) {
+        if(Array.isArray(payload)) {
             await M_DataPegawai.bulkCreate(payload)
         }else{
             await M_DataPegawai.create(payload)

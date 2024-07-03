@@ -1071,6 +1071,7 @@ const route_v1 = express.Router()
     try {
         
         const payload = await req.body
+        console.log(payload)
     
         const responseData = await F_DataPegawai_create(payload)
         if(responseData.success) {

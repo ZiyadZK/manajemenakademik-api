@@ -14,6 +14,7 @@ exports.F_DataSertifikat_getAll = async () => {
         })
 
         const formattedData = data.map(value => ({
+            no: value['no'],
             id_pegawai: value['fk_sertifikat_id_pegawai'],
             nama_pegawai: value['data_pegawai.nama_pegawai'],
             jabatan: value['data_pegawai.jabatan'],
@@ -86,13 +87,13 @@ exports.F_DataSertifikat_update = async (arraySertifikat_id, payload) => {
         if(Array.isArray(arraySertifikat_id)) {
             await M_Sertifikat_Pegawai.update(payload, {
                 where: {
-                    sertifikat_id: {
+                    no: {
                         [Op.in]: arraySertifikat_id
                     }
                 }
             })
         }else{
-            await M_Sertifikat_Pegawai.update(payload, {where: {sertifikat_id: arraySertifikat_id}})
+            await M_Sertifikat_Pegawai.update(payload, {where: {no: arraySertifikat_id}})
         }
         
         return {
@@ -114,13 +115,13 @@ exports.F_DataSertifikat_delete = async (arraySertifikat_id) => {
         if(Array.isArray(arraySertifikat_id)) {
             await M_Sertifikat_Pegawai.destroy({
                 where: {
-                    sertifikat_id: {
+                    no: {
                         [Op.in]: arraySertifikat_id
                     }
                 }
             })
         }else{
-            await M_Sertifikat_Pegawai.destroy({where: {sertifikat_id: arraySertifikat_id}})
+            await M_Sertifikat_Pegawai.destroy({where: {no: arraySertifikat_id}})
         }
         
         return {
