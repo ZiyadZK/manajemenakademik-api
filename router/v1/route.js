@@ -11,7 +11,7 @@ const { F_DataSertifikat_get, F_DataSertifikat_getAll, F_DataSertifikat_create, 
 const { F_DataMutasiSiswa_getAll, F_DataMutasiSiswa_create, F_DataMutasiSiswa_update, F_DataMutasiSiswa_delete, F_DataMutasiSIswa_get } = require('../../database/function/F_MutasiSiswa')
 const { F_DataKelas_getAll, F_DataKelas_get, F_DataKelas_setWaliKelas, F_DataKelas_setGuruBK, F_DataKelas_deleteWaliKelas, F_DataKelas_deleteGuruBK, F_DataKelas_deleteRoleKelas } = require('../../database/function/F_Kelas')
 const { F_DataRiwayat_getAll, F_DataRiwayat_get, F_DataRiwayat_create } = require('../../database/function/F_Riwayat')
-const { F_Pendidikan_Pegawai_getAll } = require('../../database/function/F_Pendidikan_Pegawai')
+const { F_Pendidikan_Pegawai_getAll, F_Pendidikan_Pegawai_create, F_Pendidikan_Pegawai_update, F_Pendidikan_Pegawai_delete } = require('../../database/function/F_Pendidikan_Pegawai')
 
 const errorHandler = (response) => ({
     error: 'Terdapat error dalam server, silahkan cek log server!',
@@ -1379,6 +1379,7 @@ const route_v1 = express.Router()
         
         const arraySertifikat_id = await req.body.arraySertifikat_id
         const payload = await req.body.payload
+        console.log(await req.body)
     
         if(typeof(arraySertifikat_id) === 'undefined' || typeof(payload) === 'undefined') {
             return res.status(400).json({
@@ -1831,13 +1832,95 @@ const route_v1 = express.Router()
 })
 
 // DATA PENDIDIKAN PEGAWAI
-.get('/v1/data/pendidikanpegawai', async (req, res) => {
+.get('/v1/data/pendidikan', async (req, res) => {
     try {
 
         const responseData = await F_Pendidikan_Pegawai_getAll()
         if(responseData.success) {
             return res.status(200).json({
                 data: responseData.data
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.post('/v1/data/pendidikan', validateBody, async (req, res) => {
+    try {
+
+        const payload = await req.body
+
+        const responseData = await F_Pendidikan_Pegawai_create(payload)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                message: 'Berhasil menambahkan pendidikan data pegawai'
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.put('/v1/data/pendidikan', validateBody, async (req, res) => {
+    try {
+
+        const payload = await req.body.payload
+        const no_pendidikan = await req.body.no_pendidikan
+
+        const responseData = await F_Pendidikan_Pegawai_update(payload, no_pendidikan)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                message: 'Berhasil mengubah data pendidikan pegawai'
+            })
+        }
+
+        return res.status(400).json({
+            error: 'Terjadi error disaat memproses data, silahkan cek log pada server!',
+            debug: responseData.debug
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
+.delete('/v1/data/pendidikan', validateBody, async (req, res) => {
+    try {
+
+        const no_pendidikan = await req.body.no_pendidikan
+
+        const responseData = await F_Pendidikan_Pegawai_delete(no_pendidikan)
+
+        if(responseData.success) {
+            return res.status(200).json({
+                message: 'Berhasil menghapus data pendidikan pegawai'
             })
         }
 
