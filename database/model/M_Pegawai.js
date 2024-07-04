@@ -30,7 +30,6 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
     nik: {
       type: DataTypes.STRING(16),
       allowNull: true,
-      unique: 'nik'
     },
     nip: {
       type: DataTypes.STRING(255),

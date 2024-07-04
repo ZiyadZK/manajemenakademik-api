@@ -84,6 +84,10 @@ exports.F_DataSertifikat_create = async (payload) => {
 
 exports.F_DataSertifikat_update = async (arraySertifikat_id, payload) => {
     try {
+        // console.log({
+        //     arraySertifikat_id, payload
+        // })
+
         if(Array.isArray(arraySertifikat_id)) {
             await M_Sertifikat_Pegawai.update(payload, {
                 where: {

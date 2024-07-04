@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const { M_DataPegawai } = require("../model/M_Pegawai")
 const { M_Pendidikan_Pegawai } = require("../model/M_Pendidikan_Pegawai")
 
@@ -7,6 +8,72 @@ exports.F_Pendidikan_Pegawai_create = async (payload) => {
             await M_Pendidikan_Pegawai.bulkCreate(payload)
         }else{
             await M_Pendidikan_Pegawai.create(payload)
+        }
+
+        return {
+            success: true
+        }
+
+    } catch (error) {
+        console.log(error.message)
+        return {
+            success: false,
+            debug: {
+                message: error.message
+            }
+        }
+    }
+}
+
+exports.F_Pendidikan_Pegawai_update = async (payload, no_pendidikan) => {
+    try {
+        if(Array.isArray(no_pendidikan)) {
+            await M_Pendidikan_Pegawai.update(payload, {
+                where: {
+                    no: {
+                        [Op.in]: no_pendidikan
+                    }
+                }
+            })
+        }else{
+            await M_Pendidikan_Pegawai.update(payload, {
+                where: {
+                    no: no_pendidikan
+                }
+            })
+        }
+
+        return {
+            success: true
+        }
+
+    } catch (error) {
+        console.log(error.message)
+        return {
+            success: false,
+            debug: {
+                message: error.message
+            }
+        }
+    }
+}
+
+exports.F_Pendidikan_Pegawai_delete = async (no_pendidikan) => {
+    try {
+        if(Array.isArray(no_pendidikan)) {
+            await M_Pendidikan_Pegawai.destroy({
+                where: {
+                    no: {
+                        [Op.in]: no_pendidikan
+                    }
+                }
+            })
+        }else{
+            await M_Pendidikan_Pegawai.destroy({
+                where: {
+                    no: no_pendidikan
+                }
+            })
         }
 
         return {

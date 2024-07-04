@@ -52,6 +52,7 @@ exports.F_DataPegawai_getAll = async () => {
                 keterangan: data.find(value => value['id_pegawai'] === id_pegawai)['keterangan'],
                 pensiun: data.find(value => value['id_pegawai'] === id_pegawai)['pensiun'] ? true : false,
                 daftar_sertifikat: Array.from(new Set(data.filter(value => value['id_pegawai'] === id_pegawai && value['daftar_sertifikat.fk_sertifikat_id_pegawai'] === id_pegawai).map(value => value['daftar_sertifikat.no']))).length > 0 ? Array.from(new Set(data.filter(value => value['id_pegawai'] === id_pegawai).map(value => value['daftar_sertifikat.no']))).map(no_sertifikat => ({
+                    no: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.no'],
                     nama_sertifikat: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.nama_sertifikat'],
                     jenis_sertifikat: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.jenis_sertifikat'],
                     fileUrl: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.fileUrl'],
@@ -59,6 +60,7 @@ exports.F_DataPegawai_getAll = async () => {
                     updatedAt: data.find(value => value['daftar_sertifikat.no'] == no_sertifikat)['daftar_sertifikat.updatedAt'],
                 })) : [],
                 daftar_pendidikan: Array.from(new Set(data.filter(value => value['id_pegawai'] === id_pegawai && value['daftar_pendidikan.fk_pendidikan_id_pegawai'] === id_pegawai).map(value => value['daftar_pendidikan.no']))).length > 0 ? Array.from(new Set(data.filter(value => value['id_pegawai'] === id_pegawai).map(value => value['daftar_pendidikan.no']))).map(no_pendidikan => ({
+                    no: data.find(value => value['daftar_pendidikan.no'] == no_pendidikan)['daftar_pendidikan.no'],
                     tingkat_pendidikan: data.find(value => value['daftar_pendidikan.no'] == no_pendidikan)['daftar_pendidikan.tingkat_pendidikan'],
                     sekolah: data.find(value => value['daftar_pendidikan.no'] == no_pendidikan)['daftar_pendidikan.sekolah'],
                     universitas: data.find(value => value['daftar_pendidikan.no'] == no_pendidikan)['daftar_pendidikan.universitas'],
