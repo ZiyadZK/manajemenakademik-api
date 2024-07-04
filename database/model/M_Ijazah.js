@@ -15,32 +15,17 @@ const M_DataIjazah = sequelize.define('data_ijazahs', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
-    nama_lulusan: {
+    fk_ijazah_nis: {
       type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    nisn: {
-      type: DataTypes.STRING(200),
-      allowNull: true
+      allowNull: true,
+      unique: 'fk_ijazah_nis',
+      references: {
+        model: 'data_alumni',
+        key: 'nis'
+      }
     },
     nama_pengambil: {
       type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    kelas: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    rombel: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    no_rombel: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    tahun_lulus: {
-      type: DataTypes.STRING,
       allowNull: true
     },
     status: {

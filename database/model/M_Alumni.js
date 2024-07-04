@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
+const { M_DataIjazah } = require("./M_Ijazah");
 
 const M_DataAlumni = sequelize.define('data_alumni', {
     kelas: {
@@ -115,5 +116,8 @@ const M_DataAlumni = sequelize.define('data_alumni', {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_alumni' // If table name is different from model name
   });
+
+  M_DataAlumni.hasOne(M_DataIjazah, { foreignKey: 'fk_ijazah_nis', as: 'data_ijazah', onDelete: 'CASCADE' })
+  M_DataIjazah.belongsTo(M_DataAlumni, { foreignKey: 'fk_ijazah_nis', targetKey: 'nis' })
 
 module.exports = {M_DataAlumni}
