@@ -14,7 +14,6 @@ const cors = require('cors')
 
 const route_v1 = require('./router/v1/route')
 const { validateApiKey, validateEmptyBody } = require('./middleware')
-const { initSocket } = require('./socket')
 
 const app = express()
 // const httpServer = http.createServer(app)
@@ -26,14 +25,14 @@ app.use(cookieParser())
 
 app.use((req, res, next) => {
     if(req.method !== 'GET') {
-        return bodyParser.json()(req, res, next);
+        return express.json({ limit: '50mb'})(req, res, next);
     }
 
     next()
 })
 
 
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
 const port = process.env.PORT || 8080
 
