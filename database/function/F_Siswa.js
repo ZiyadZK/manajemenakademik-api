@@ -1,5 +1,4 @@
 const { Op } = require("sequelize");
-const { getSocketIO } = require("../../socket");
 const { M_DataAlumni } = require("../model/M_Alumni");
 const { M_DataSiswa } = require("../model/M_Siswa");
 const { F_DataAlumni_create } = require("./F_Alumni");
@@ -67,12 +66,6 @@ exports.F_Siswa_create = async (payload) => {
         }else{
             await M_DataSiswa.create(payload)
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataSiswa.findAll()
-
-        io.emit('SIMAK_SISWA', emit_data)
         
         return {
             success: true
