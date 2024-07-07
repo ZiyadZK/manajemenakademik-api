@@ -1,5 +1,5 @@
 const express = require('express')
-const { F_Siswa_get, F_Siswa_get_single, F_Siswa_create, F_Siswa_update, F_Siswa_delete, F_Siswa_naikKelas } = require('../../database/function/F_Siswa')
+const { F_Siswa_get, F_Siswa_get_single, F_Siswa_create, F_Siswa_update, F_Siswa_delete, F_Siswa_naikKelas, F_Siswa_naikKelas_selected } = require('../../database/function/F_Siswa')
 const { validateBody, validateFilterQuery, ignoreBodyMethod } = require('../../middleware')
 const { F_Akun_validateLogin, F_Akun_getAll, F_Akun_create, F_Akun_update, F_Akun_delete } = require('../../database/function/F_Akun')
 const { decryptKey } = require('../../libs/cryptor')
@@ -235,18 +235,28 @@ const route_v1 = express.Router()
 
 .post('/v1/data/siswa/naikkelas', validateBody, async (req, res) => {
     try {
+        const nisSelectedNaikKelasArr = await req.body.nisSelectedNaikKelasArr
         const nisTidakNaikKelasArr = await req.body.nisTidakNaikKelasArr
-    
-        if(typeof(nisTidakNaikKelasArr) === 'undefined') {
-            return res.status(400).json({
-                error: "Anda harus menambahkan daftar nis yang tidak naik kelas di kolom `nisTidakNaikKelasArr`"
-            })
+        console.log(await req.body)
+
+        let responseData
+        if(Array.isArray(nisTidakNaikKelasArr)) {
+            if(nisTidakNaikKelasArr.length > 0) {
+                responseData = await F_Siswa_naikKelas(nisTidakNaikKelasArr)
+            }else{
+                responseData = await F_Siswa_naikKelas()
+            }
         }
 
-        const responseData = await F_Siswa_naikKelas(nisTidakNaikKelasArr)
+        if(Array.isArray(nisSelectedNaikKelasArr)) {
+            if(nisSelectedNaikKelasArr.length > 0) {
+                responseData = await F_Siswa_naikKelas_selected(nisSelectedNaikKelasArr)
+            }
+        }
+
         if(responseData.success) {
             return res.status(200).json({
-                success: "Berhasil menghapus data siswa tersebut!"
+                success: "Berhasil menaikkan kelas data siswa tersebut!"
             })
         }
 
@@ -258,6 +268,7 @@ const route_v1 = express.Router()
         })
         
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             error: 'Terdapat error dalam server, silahkan cek log server!',
             debug: {
