@@ -1,5 +1,4 @@
 const { Op } = require("sequelize")
-const { getSocketIO } = require("../../socket")
 const { M_DataIjazah } = require("../model/M_Ijazah")
 const { M_DataAlumni } = require("../model/M_Alumni")
 
@@ -82,13 +81,6 @@ exports.F_DataIjazah_update = async (arrayNisn, payload) => {
             await M_DataIjazah.update(payload, {where: {nisn: arrayNisn}})
         }
 
-        const io = getSocketIO()
-
-        const emit_data = await M_DataIjazah.findAll({ raw: true })
-        // console.log(emit_data)
-
-        io.emit('SIMAK_IJAZAH', emit_data)
-
         return {
             success: true
         }        
@@ -116,12 +108,6 @@ exports.F_DataIjazah_delete = async (arrayNisn) => {
         }else{
             await M_DataIjazah.destroy({where: {nisn: arrayNisn}})
         }
-
-        const io = getSocketIO()
-
-        const emit_data = await M_DataIjazah.findAll()
-
-        io.emit('SIMAK_IJAZAH', emit_data)
 
         return {
             success: true
