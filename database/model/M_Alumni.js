@@ -96,6 +96,10 @@ const M_DataAlumni = sequelize.define('data_alumni', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
+    nama_wali: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     telp_ayah: {
       type: DataTypes.STRING(200),
       allowNull: true
@@ -104,11 +108,19 @@ const M_DataAlumni = sequelize.define('data_alumni', {
       type: DataTypes.STRING(200),
       allowNull: true
     },
+    telp_wali : {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     pekerjaan_ayah: {
       type: DataTypes.STRING(200),
       allowNull: true
     },
     pekerjaan_ibu: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    pekerjaan_wali: {
       type: DataTypes.STRING(200),
       allowNull: true
     }
