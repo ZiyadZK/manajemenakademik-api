@@ -161,43 +161,78 @@ exports.F_Siswa_delete = async (arrayNis) => {
 
 exports.F_Siswa_naikKelas = async (nisArrTidakNaikKelas) => {
     try {
-        const dataCalonAlumni = await M_DataSiswa.findAll({
-            where: {
-                nis: {
-                    [Op.notIn]: nisArrTidakNaikKelas
-                },
-                kelas: 'XII'
-            }
-        })
+        if(Array.isArray(nisArrTidakNaikKelas)) {
 
-        await M_DataSiswa.destroy({
-            where: {
-                nis: {
-                    [Op.notIn]: nisArrTidakNaikKelas
+            const dataCalonAlumni = await M_DataSiswa.findAll({
+                where: {
+                    nis: {
+                        [Op.notIn]: nisArrTidakNaikKelas
+                    },
+                    kelas: 'XII'
                 },
-                kelas: 'XII'
-            }
-        })
+                raw: true
+            })
+    
+            await M_DataSiswa.destroy({
+                where: {
+                    nis: {
+                        [Op.notIn]: nisArrTidakNaikKelas
+                    },
+                    kelas: 'XII'
+                }
+            })
+    
+            await M_DataSiswa.update({ kelas: 'XII' },{
+                where: {
+                    nis: {
+                        [Op.notIn]: nisArrTidakNaikKelas
+                    },
+                    kelas: 'XI'
+                }
+            })
+    
+            await M_DataSiswa.update({ kelas: 'XI'}, {
+                where: {
+                    nis: {
+                        [Op.notIn]: nisArrTidakNaikKelas
+                    },
+                    kelas: 'X'
+                }
+            })
+    
+            await M_DataAlumni.bulkCreate(dataCalonAlumni.map(value => ({...value, tahun_keluar: date_getYear(), tanggal_keluar: `${date_getYear()}-${date_getMonth()}-${date_getDay()}`})))
+        }else{
+            const dataCalonAlumni = await M_DataSiswa.findAll({
+                where: {
+                    kelas: 'XII'
+                },
+                raw: true
+            })
 
-        await M_DataSiswa.update({ kelas: 'XII' },{
-            where: {
-                nis: {
-                    [Op.notIn]: nisArrTidakNaikKelas
-                },
+            await M_DataAlumni.bulkCreate(dataCalonAlumni.map(value => ({...value, tahun_keluar: date_getYear(), tanggal_keluar: `${date_getYear()}-${date_getMonth()}-${date_getDay()}`})))
+
+            await M_DataSiswa.destroy({
+                where: {
+                    kelas: 'XII'
+                }
+            })
+
+            await M_DataSiswa.update({
+                kelas: 'XII'
+            }, {
+                where: {
+                    kelas: 'XI'
+                }
+            })
+
+            await M_DataSiswa.update({
                 kelas: 'XI'
-            }
-        })
-
-        await M_DataSiswa.update({ kelas: 'XI'}, {
-            where: {
-                nis: {
-                    [Op.notIn]: nisArrTidakNaikKelas
-                },
-                kelas: 'X'
-            }
-        })
-
-        await M_DataAlumni.bulkCreate(dataCalonAlumni.map(value => ({...value, tahun_keluar: date_getYear(), tanggal_keluar: `${date_getYear()}-${date_getMonth()}-${date_getDay()}`})))
+            }, {
+                where: {
+                    kelas: 'X'
+                }
+            })
+        }
 
         return {
             success: true
@@ -209,6 +244,65 @@ exports.F_Siswa_naikKelas = async (nisArrTidakNaikKelas) => {
             debug: {
                 message: error.message
             }
+        }
+    }
+}
+
+exports.F_Siswa_naikKelas_selected = async (nisArr) => {
+    try {
+        const dataCalonAlumni = await M_DataSiswa.findAll({
+            where: {
+                nis: {
+                    [Op.in]: nisArr
+                },
+                kelas: 'XII'
+            },
+            raw: true
+        })
+        console.log(dataCalonAlumni.length)
+
+        await M_DataAlumni.bulkCreate(dataCalonAlumni.map(value => ({...value, tahun_keluar: date_getYear(), tanggal_keluar: `${date_getYear()}-${date_getMonth()}-${date_getDay()}`})))
+
+        await M_DataSiswa.destroy({
+            where: {
+                nis: {
+                    [Op.in]: nisArr
+                },
+                kelas: 'XII'
+            }
+        })
+
+        await M_DataSiswa.update({
+            kelas: 'XII'
+        }, {
+            where: {
+                nis: {
+                    [Op.in]: nisArr
+                },
+                kelas: 'XI'
+            }
+        })
+
+        await M_DataSiswa.update({
+            kelas: 'XI'
+        }, {
+            where: {
+                nis: {
+                    [Op.in]: nisArr
+                },
+                kelas: 'X'
+            }
+        })
+
+        return {
+            success: true
+        }
+
+    } catch (error) {
+        console.log(error)
+        return {
+            success: false,
+            message: error.message
         }
     }
 }
