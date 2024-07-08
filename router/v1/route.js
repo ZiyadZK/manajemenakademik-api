@@ -947,6 +947,8 @@ const route_v1 = express.Router()
                 })
             }
         }
+
+        console.log(arrayNisn)
     
         const responseData = await F_DataIjazah_delete(arrayNisn)
         if(responseData.success) {

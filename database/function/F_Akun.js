@@ -3,7 +3,6 @@ const { Op } = require("sequelize")
 const { encryptKey } = require("../../libs/cryptor")
 const { randNumber } = require("../../libs/functions/randNumber")
 const { sendEmail } = require("../../libs/mailer")
-const { getSocketIO } = require("../../socket")
 const { M_DataAkun } = require('../model/M_Akun')
 const { M_DataPegawai } = require("../model/M_Pegawai")
 

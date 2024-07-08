@@ -2,7 +2,7 @@ const { nanoid } = require("nanoid")
 const { M_DataPegawai } = require("../model/M_Pegawai")
 const { M_DataSertifikat, M_Sertifikat_Pegawai } = require("../model/M_Sertifikat_Pegawai")
 const { F_DataSertifikat_create } = require("./F_Sertifikat")
-const { getSocketIO } = require("../../socket")
+
 const { Op } = require("sequelize")
 const { M_Pendidikan_Pegawai } = require("../model/M_Pendidikan_Pegawai")
 const { M_DataAkun } = require("../model/M_Akun")

@@ -1,5 +1,4 @@
 const { Op } = require("sequelize")
-const { getSocketIO } = require("../../socket")
 const { M_DataMutasiSiswa } = require("../model/M_MutasiSiswa")
 
 exports.F_DataMutasiSiswa_create = async (payload) => {

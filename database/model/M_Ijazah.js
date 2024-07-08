@@ -18,7 +18,6 @@ const M_DataIjazah = sequelize.define('data_ijazahs', {
     fk_ijazah_nis: {
       type: DataTypes.STRING(200),
       allowNull: true,
-      unique: 'fk_ijazah_nis',
       references: {
         model: 'data_alumni',
         key: 'nis'
@@ -34,7 +33,13 @@ const M_DataIjazah = sequelize.define('data_ijazahs', {
     }
   }, {
     timestamps: false, // If you don't want timestamps
-    tableName: 'data_ijazahs' // If table name is different from model name
+    tableName: 'data_ijazahs',
+    indexes: [
+      {
+        unique: true,
+        fields: ['fk_ijazah_nis']
+      }
+    ]
   });
 
 

@@ -1,5 +1,4 @@
 const { Op } = require("sequelize")
-const { getSocketIO } = require("../../socket")
 const { M_DataAlumni } = require("../model/M_Alumni")
 
 exports.F_DataAlumni_getAll = async () => {

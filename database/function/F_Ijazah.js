@@ -67,18 +67,18 @@ exports.F_DataIjazah_create = async (payload) => {
     }
 }
 
-exports.F_DataIjazah_update = async (arrayNisn, payload) => {
+exports.F_DataIjazah_update = async (arrayNis, payload) => {
     try {
-        if(Array.isArray(arrayNisn)) {
+        if(Array.isArray(arrayNis)) {
             await M_DataIjazah.update(payload, {
                 where: {
-                    nisn: {
-                        [Op.in]: arrayNisn
+                    fk_ijazah_nis: {
+                        [Op.in]: arrayNis
                     }
                 }
             })
         }else{
-            await M_DataIjazah.update(payload, {where: {nisn: arrayNisn}})
+            await M_DataIjazah.update(payload, {where: {fk_ijazah_nis: arrayNis}})
         }
 
         return {
@@ -95,18 +95,18 @@ exports.F_DataIjazah_update = async (arrayNisn, payload) => {
     }
 }
 
-exports.F_DataIjazah_delete = async (arrayNisn) => {
+exports.F_DataIjazah_delete = async (arrayNis) => {
     try {
-        if(Array.isArray(arrayNisn)) {
+        if(Array.isArray(arrayNis)) {
             await M_DataIjazah.destroy({
                 where: {
-                    nisn: {
-                        [Op.in]: arrayNisn
+                    fk_ijazah_nis: {
+                        [Op.in]: arrayNis
                     }
                 }
             })
         }else{
-            await M_DataIjazah.destroy({where: {nisn: arrayNisn}})
+            await M_DataIjazah.destroy({where: {fk_ijazah_nis: arrayNis}})
         }
 
         return {

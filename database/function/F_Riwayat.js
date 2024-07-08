@@ -1,4 +1,4 @@
-const { getSocketIO } = require("../../socket")
+
 const { M_DataRiwayat } = require("../model/M_Riwayat")
 
 exports.F_DataRiwayat_getAll = async () => {
