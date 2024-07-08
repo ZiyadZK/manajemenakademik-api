@@ -3,19 +3,20 @@ const { sequelize } = require("../database_config");
 
 const M_DataKelas = sequelize.define('data_kelas', {
     id_kelas: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER(3),
+      autoIncrement: true,
       primaryKey: true
     },
     kelas: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5),
       allowNull: false
     },
     jurusan: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(10),
       allowNull: false
     },
     rombel: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5),
       allowNull: false
     },
     fk_walikelas_id_pegawai: {

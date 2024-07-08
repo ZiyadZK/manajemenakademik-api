@@ -75,9 +75,9 @@ M_DataPegawai.hasMany(M_Sertifikat_Pegawai, { foreignKey: 'fk_sertifikat_id_pega
 M_Sertifikat_Pegawai.belongsTo(M_DataPegawai, { foreignKey: 'fk_sertifikat_id_pegawai', targetKey: 'id_pegawai'})
 
 M_DataPegawai.hasMany(M_DataKelas, { foreignKey: 'fk_walikelas_id_pegawai', sourceKey: 'id_pegawai', as: 'wali_kelas', onDelete: 'SET NULL'})
-M_DataKelas.belongsTo(M_DataPegawai, { foreignKey: 'fk_walikelas_id_pegawai', targetKey: 'id_pegawai'})
+M_DataKelas.belongsTo(M_DataPegawai, { foreignKey: 'fk_walikelas_id_pegawai', targetKey: 'id_pegawai', as: 'wali_kelas'})
 
 M_DataPegawai.hasMany(M_DataKelas, { foreignKey: 'fk_gurubk_id_pegawai', sourceKey: 'id_pegawai', as: 'gurubk_kelas', onDelete: 'SET NULL'})
-M_DataKelas.belongsTo(M_DataPegawai, { foreignKey: 'fk_gurubk_id_pegawai', targetKey: 'id_pegawai'})
+M_DataKelas.belongsTo(M_DataPegawai, { foreignKey: 'fk_gurubk_id_pegawai', targetKey: 'id_pegawai', as: 'gurubk_kelas'})
 
 module.exports = {M_DataPegawai}

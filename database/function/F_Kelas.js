@@ -1,15 +1,41 @@
 const { nanoid } = require("nanoid")
 const { M_DataKelas } = require("../model/M_Kelas")
+const { M_DataPegawai } = require("../model/M_Pegawai")
 
 exports.F_DataKelas_getAll = async () => {
     try {
         const data = await M_DataKelas.findAll({
-            raw: true
+            raw: true,
+            include: [
+                {
+                    model: M_DataPegawai,
+                    as: 'wali_kelas'
+                },
+                {
+                    model: M_DataPegawai,
+                    as: 'gurubk_kelas'
+                }
+            ]
+        })
+
+        const formattedData = data.map(value => {
+            return {
+                id_kelas: value['id_kelas'],
+                kelas: value['kelas'],
+                jurusan: value['jurusan'],
+                rombel: value['rombel'],
+                fk_walikelas_id_pegawai: value['fk_walikelas_id_pegawai'],
+                nama_wali_kelas: value['wali_kelas.nama_pegawai'],
+                email_wali_kelas: value['wali_kelas.email_pegawai'],
+                fk_gurubk_id_pegawai: value['fk_gurubk_id_pegawai'],
+                nama_gurubk_kelas: value['gurubk_kelas.nama_pegawai'],
+                email_gurubk_kelas: value['gurubk_kelas.email_pegawai'],
+            }
         })
 
         return {
             success: true,
-            data
+            data: formattedData
         }
     } catch (error) {
         console.log(error)
