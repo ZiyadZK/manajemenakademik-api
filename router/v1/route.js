@@ -1542,24 +1542,15 @@ const route_v1 = express.Router()
         const rombel = req.params.rombel
         const no_rombel = req.params.no_rombel
 
-        const id_pegawai = await req.body.id_pegawai
-        const nama_pegawai = await req.body.nama_pegawai
-        const nik_pegawai = await req.body.nik_pegawai
-        const email_pegawai = await req.body.email_pegawai
+        const id_pegawai = await req.body.fk_walikelas_id_pegawai
 
-        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+        if(id_pegawai === '') {
             return res.status(400).json({
                 error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
             })
         }
 
-        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
-            return res.status(400).json({
-                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
-            })
-        }
-
-        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
+        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({
@@ -1587,26 +1578,17 @@ const route_v1 = express.Router()
         const rombel = req.params.rombel
         const no_rombel = req.params.no_rombel
 
-        console.log(req.params)
+        const id_pegawai = await req.body.fk_walikelas_id_pegawai
+        console.log(id_pegawai)
 
-        const id_pegawai = await req.body.id_pegawai
-        const nama_pegawai = await req.body.nama_pegawai
-        const nik_pegawai = await req.body.nik_pegawai
-        const email_pegawai = await req.body.email_pegawai
 
-        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+        if(id_pegawai === '') {
             return res.status(400).json({
                 error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
             })
         }
 
-        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
-            return res.status(400).json({
-                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
-            })
-        }
-
-        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
+        const responseData = await F_DataKelas_setWaliKelas(kelas, rombel, no_rombel, id_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({
@@ -1634,24 +1616,15 @@ const route_v1 = express.Router()
         const rombel = req.params.rombel
         const no_rombel = req.params.no_rombel
 
-        const id_pegawai = await req.body.id_pegawai
-        const nama_pegawai = await req.body.nama_pegawai
-        const nik_pegawai = await req.body.nik_pegawai
-        const email_pegawai = await req.body.email_pegawai
+        const id_pegawai = await req.body.fk_gurubk_id_pegawai
 
-        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+        if(id_pegawai === '') {
             return res.status(400).json({
                 error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
             })
         }
 
-        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
-            return res.status(400).json({
-                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
-            })
-        }
-
-        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
+        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({
@@ -1679,24 +1652,15 @@ const route_v1 = express.Router()
         const rombel = req.params.rombel
         const no_rombel = req.params.no_rombel
 
-        const id_pegawai = await req.body.id_pegawai
-        const nama_pegawai = await req.body.nama_pegawai
-        const nik_pegawai = await req.body.nik_pegawai
-        const email_pegawai = await req.body.email_pegawai
+        const id_pegawai = await req.body.fk_gurubk_id_pegawai
 
-        if(typeof(id_pegawai) !== 'string' || typeof(nama_pegawai) !== 'string' || typeof(nik_pegawai) !== 'string') {
+        if(id_pegawai === '') {
             return res.status(400).json({
                 error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
             })
         }
 
-        if(id_pegawai === '' || nama_pegawai === '' || nik_pegawai === '') {
-            return res.status(400).json({
-                error: "Anda harus mengisi kolom `id_pegawai`,`nama_pegawai`,`nik_pegawai` dengan tipe string/text"
-            })
-        }
-
-        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik_pegawai, email_pegawai)
+        const responseData = await F_DataKelas_setGuruBK(kelas, rombel, no_rombel, id_pegawai)
 
         if(responseData.success) {
             return res.status(200).json({

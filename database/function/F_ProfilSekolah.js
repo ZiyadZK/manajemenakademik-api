@@ -7,10 +7,38 @@ exports.F_DataProfilSekolah_get = async () => {
         const data = await M_DataProfilSekolah.findOne({
             raw: true
         })
+
+        const formattedData = data ? {
+            npsn: data['npsn'],
+            status: data['status'],
+            bentuk_pendidikan: data['bentuk_pendidikan'],
+            status_kepemilikan: data['status_kepemilikan'],
+            sk_pendirian_sekolah: data['sk_pendirian_sekolah'],
+            tanggal_sk_pendirian: data['tanggal_sk_pendirian'],
+            sk_izin_operasional: data['sk_izin_operasional'],
+            tanggal_sk_izin_operasional: data['tanggal_sk_izin_operasional'],
+            operator: data['operator'],
+            akreditasi: data['akreditasi'],
+            kurikulum: data['kurikulum'],
+            waktu: data['waktu'],
+        } : {
+            npsn: '',
+            status: '',
+            bentuk_pendidikan: '',
+            status_kepemilikan: '',
+            sk_pendirian_sekolah: '',
+            tanggal_sk_pendirian: '',
+            sk_izin_operasional: '',
+            tanggal_sk_izin_operasional: '',
+            operator: '',
+            akreditasi: '',
+            kurikulum: '',
+            waktu: ''
+        }
         
         return {
             success: true,
-            data
+            data: formattedData
         }
     } catch (error) {
         console.log(error.message)
@@ -45,21 +73,13 @@ exports.F_DataProfilSekolah_getKepalaSekolah = async () => {
 exports.F_DataProfilSekolah_update = async (oldData, newData) => {
     try {
         // Get ID Kepsek
-        const newIdKepsek = newData.id_kepala_sekolah
-        const oldIdKepsek = oldData.id_kepala_sekolah
-
-        const { id_kepala_sekolah, kepala_sekolah, ...updatedData} = newData
-
         await M_DataProfilSekolah.update({
+            ...newData
+        }, {
             where: {
                 npsn: oldData.npsn
-            },
-            data: updatedData
+            }
         })
-
-        await F_DataPegawai_update(oldIdKepsek, { jabatan: 'Guru' })
-
-        await F_DataPegawai_update(newIdKepsek, { jabatan: 'Kepala Sekolah' })
         
         return {
             success: true

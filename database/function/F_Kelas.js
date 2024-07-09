@@ -48,10 +48,10 @@ exports.F_DataKelas_getAll = async () => {
     }
 }
 
-exports.F_DataKelas_get = async (kelas, rombel, no_rombel) => {
+exports.F_DataKelas_get = async (kelas, jurusan, rombel) => {
     try {
         const data = await M_DataKelas.findOne({
-            where: {kelas, rombel, no_rombel}
+            where: {kelas, jurusan, rombel}
         })
 
         return {
@@ -69,40 +69,32 @@ exports.F_DataKelas_get = async (kelas, rombel, no_rombel) => {
     }
 }
 
-exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik, email_walikelas) => {
+exports.F_DataKelas_setWaliKelas = async (kelas, jurusan, rombel, id_pegawai) => {
     try {
         const isExist = await M_DataKelas.findOne({
             where: {
-                kelas, rombel, no_rombel
+                kelas, jurusan, rombel
             }
         })
 
         if(isExist) {
             await M_DataKelas.update({
-                id_walikelas: id_pegawai,
-                nama_walikelas: nama_pegawai,
-                nik_walikelas: nik,
-                email_walikelas
+                fk_walikelas_id_pegawai: id_pegawai
             }, {
                 where: {
                     kelas, 
-                    rombel, 
-                    no_rombel
+                    jurusan, 
+                    rombel
                 }
             })
         }else{
             await M_DataKelas.create({
                 id_kelas: nanoid(8),
-                id_walikelas: id_pegawai,
-                nama_walikelas: nama_pegawai,
-                nik_walikelas: nik,
-                email_walikelas,
-                id_guru_bk: '',
-                nama_guru_bk: '',
-                nik_guru_bk: '',
+                fk_walikelas_id_pegawai: id_pegawai,
+                fk_gurubk_id_pegawai: null,
                 kelas,
-                rombel,
-                no_rombel
+                jurusan,
+                rombel
             })
         }
 
@@ -120,40 +112,32 @@ exports.F_DataKelas_setWaliKelas = async (kelas, rombel, no_rombel, id_pegawai, 
     }
 }
 
-exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nama_pegawai, nik, email_guru_bk) => {
+exports.F_DataKelas_setGuruBK = async (kelas, jurusan, rombel, id_pegawai) => {
     try {
         const isExist = await M_DataKelas.findOne({
             where: {
-                kelas, rombel, no_rombel
+                kelas, jurusan, rombel
             }
         })
 
         if(isExist) {
             await M_DataKelas.update({
-                id_guru_bk: id_pegawai,
-                nama_guru_bk: nama_pegawai,
-                nik_guru_bk: nik,
-                email_guru_bk
+                fk_gurubk_id_pegawai: id_pegawai
             }, {
                 where: {
                     kelas, 
-                    rombel, 
-                    no_rombel
+                    jurusan, 
+                    rombel
                 }
             })
         }else{
             await M_DataKelas.create({
                 id_kelas: nanoid(8),
-                id_walikelas: '',
-                nama_walikelas: '',
-                nik_walikelas: '',
-                id_guru_bk: id_pegawai,
-                nama_guru_bk: nama_pegawai,
-                email_guru_bk,
-                nik_guru_bk: nik,
+                fk_walikelas_id_pegawai: null,
+                fk_gurubk_id_pegawai: id_pegawai,
                 kelas,
-                rombel,
-                no_rombel
+                jurusan,
+                rombel
             })
         }
 
@@ -174,19 +158,17 @@ exports.F_DataKelas_setGuruBK = async (kelas, rombel, no_rombel, id_pegawai, nam
 exports.F_DataKelas_deleteRoleKelas = async (parameter, role) => {
     try {
 
+        console.log(role)
+
         if(role === 'Wali Kelas') {
             await M_DataKelas.update({
-                id_walikelas: '',
-                nama_walikelas: '',
-                nik_walikelas: ''
+                fk_walikelas_id_pegawai: null
             }, {
               where: parameter
             })
         }else{
             await M_DataKelas.update({
-                id_guru_bk: '',
-                nama_guru_bk: '',
-                nik_guru_bk: ''
+                fk_gurubk_id_pegawai: null,
             }, {
               where: parameter  
             })
