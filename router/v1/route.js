@@ -1915,4 +1915,141 @@ const route_v1 = express.Router()
     }
 })
 
+// DASHBOARD
+.get('/v1/data/dashboard', async (req, res) => {
+    try {
+
+        let response = null || {}
+
+        const responseSiswa = await F_Siswa_get()
+        if(responseSiswa.success) {
+            const siswa = responseSiswa.data
+            if(siswa.length > 0) {
+                response['data_siswa'] = {
+                    exist: true,
+                    total: siswa.length,
+                    rekap: Array.from(new Set(responseSiswa.data.map(value => `${value['kelas']} ${value['jurusan']} ${value['rombel']}`))).map(value => {
+                        return {
+                            kelas: value.split(' ')[0],
+                            jurusan: value.split(' ')[1],
+                            rombel: value.split(' ')[2],
+                            jumlah: siswa.filter(v => v['kelas'] === value.split(' ')[0]).filter(v => v['jurusan'] === value.split(' ')[1]).filter(v => v['rombel'] === value.split(' ')[2]).length
+                        }
+                    })
+                }
+            }else{
+                response['data_siswa'] = {
+                    exist: false,
+                    total: siswa.length
+                }
+            }
+        }
+
+        const responseMutasiSiswa = await F_DataMutasiSiswa_getAll()
+        if(responseMutasiSiswa.success) {
+            const mutasiSiswa = responseMutasiSiswa.data
+            if(mutasiSiswa.length > 0) {
+                response['data_mutasi_siswa'] = {
+                    exist: true,
+                    total: mutasiSiswa.length,
+                    rekap: Array.from(new Set(mutasiSiswa.map(value => value['tahun_keluar']))).map(tahun_keluar => {
+                        return {
+                            tahun: tahun_keluar,
+                            total: mutasiSiswa.filter(value => value['tahun_keluar'] == tahun_keluar).length,
+                            rekap: Array.from(new Set(mutasiSiswa.filter(value => value['tahun_keluar'] == tahun_keluar).map(value => `${value['kelas']} ${value['jurusan']} ${value['rombel']}`))).map(value => {
+                                return {
+                                    kelas: value.split(' ')[0],
+                                    jurusan: value.split(' ')[1],
+                                    rombel: value.split(' ')[2],
+                                    jumlah: mutasiSiswa.filter(value => value['tahun_keluar'] == tahun_keluar).filter(v => v['kelas'] === value.split(' ')[0]).filter(v => v['jurusan'] === value.split(' ')[1]).filter(v => v['rombel'] === value.split(' ')[2]).length
+                                }
+                            })
+                        }
+                    })
+                }
+            }else{
+                response['data_mutasi_siswa'] = {
+                    exist: false,
+                    total: mutasiSiswa.length
+                }
+            }
+        }
+
+        const responseAlumni = await F_DataAlumni_getAll()
+        if(responseAlumni.success) {
+            const alumni = responseAlumni.data
+
+            if(alumni.length > 0) {
+
+                response['data_alumni'] = {
+                    exist: true,
+                    total: alumni.length,
+                    rekap: Array.from(new Set(alumni.map(value => value['tahun_keluar']))).map(tahun_keluar => {
+                        return {
+                            tahun: tahun_keluar,
+                            total: alumni.filter(value => value['tahun_keluar'] == tahun_keluar).length,
+                            rekap: Array.from(new Set(alumni.filter(value => value['tahun_keluar'] == tahun_keluar).map(value => `${value['kelas']} ${value['jurusan']} ${value['rombel']}`))).map(value => {
+                                return {
+                                    kelas: value.split(' ')[0],
+                                    jurusan: value.split(' ')[1],
+                                    rombel: value.split(' ')[2],
+                                    jumlah: alumni.filter(value => value['tahun_keluar'] == tahun_keluar).filter(v => v['kelas'] === value.split(' ')[0]).filter(v => v['jurusan'] === value.split(' ')[1]).filter(v => v['rombel'] === value.split(' ')[2]).length
+                                }
+                            })
+                        }
+                    })
+                }
+            }else{
+                response['data_alumni'] = {
+                    exist: false,
+                    total: alumni.length
+                }
+            }
+
+        }
+
+        const responsePegawai = await F_DataPegawai_getAll()
+        if(responsePegawai.success) {
+            const pegawai = responsePegawai.data
+
+            if(pegawai.length > 0) {
+                const pegawaiAktif = pegawai.filter(value => !value['pensiun'])
+    
+                response['data_pegawai'] = {
+                    exist: true,
+                    total: pegawai.length,
+                    aktif: pegawai.filter(value => !value['pensiun']).length,
+                    pensiun: pegawai.filter(value => value['pensiun']).length,
+                    rekap: {
+                        daftar_jabatan: Array.from(new Set(pegawaiAktif.map(value => value['jabatan']))).map(value => ({
+                            jabatan: value,
+                            total: pegawaiAktif.filter(v => v['jabatan'] === value).length
+                        })),
+                        daftar_status_kepegawaian: Array.from(new Set(pegawaiAktif.map(value => value['status_kepegawaian']))).map(value => ({
+                            status_kepegawaian: value,
+                            total: pegawaiAktif.filter(v => v['status_kepegawaian'] === value).length
+                        }))
+                    }
+                }
+            }else{
+                response['data_pegawai'] = {
+                    exist: false,
+                    total: pegawai.length
+                }
+            }
+        }
+
+        return res.status(200).json({
+            data: response
+        })
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Terdapat error dalam server, silahkan cek log server!',
+            debug: {
+                message: error.message
+            }
+        })
+    }
+})
+
 module.exports = route_v1
