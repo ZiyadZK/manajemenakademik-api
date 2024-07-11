@@ -1,9 +1,10 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../database_config");
+const { M_DataRiwayat } = require("./M_Riwayat");
 
 const M_DataAkun = sequelize.define('data_akuns', {
     id_akun: {
-      type: DataTypes.INTEGER(3),
+      type: DataTypes.INTEGER(10),
       primaryKey: true,
       autoIncrement: true
     },
@@ -28,5 +29,8 @@ const M_DataAkun = sequelize.define('data_akuns', {
     timestamps: false, // If you don't want timestamps
     tableName: 'data_akuns' // If table name is different from model name
 });
+
+M_DataAkun.hasMany(M_DataRiwayat, { foreignKey: 'fk_riwayat_id_akun', sourceKey: 'id_akun', as: 'riwayat', onDelete: 'CASCADE' })
+M_DataRiwayat.belongsTo(M_DataAkun, { foreignKey: 'fk_riwayat_id_akun', targetKey: 'id_akun', as: 'akun'})
 
 module.exports = {M_DataAkun}

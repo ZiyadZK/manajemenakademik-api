@@ -1,15 +1,47 @@
 
+const { M_DataAkun } = require("../model/M_Akun")
+const { M_DataPegawai } = require("../model/M_Pegawai")
 const { M_DataRiwayat } = require("../model/M_Riwayat")
 
 exports.F_DataRiwayat_getAll = async () => {
     try {
         const data = await M_DataRiwayat.findAll({
-            raw: true
+            raw: true,
+            include: [
+                {
+                    model: M_DataAkun,
+                    as: 'akun',
+                    include: [
+                        {
+                            model: M_DataPegawai,
+                            as: 'data_pegawai'
+                        }
+                    ]
+                }
+            ],
+            order: [
+                ['tanggal', 'DESC'],
+                ['waktu', 'DESC']
+            ]
         })
+
+        const formattedData = data.map(value => ({
+            id_riwayat: value['id_riwayat'],
+            aksi: value['aksi'],
+            kategori: value['kategori'],
+            keterangan: value['keterangan'],
+            records: value['records'],
+            tanggal: value['tanggal'],
+            waktu: value['waktu'],
+            id_akun: value['akun.id_akun'],
+            id_pegawai: value['akun.data_pegawai.id_pegawai'],
+            nama_akun: value['akun.data_pegawai.nama_pegawai'],
+            email_akun: value['akun.data_pegawai.email_pegawai']
+        }))
         
         return {
             success: true,
-            data
+            data: formattedData
         }
     } catch (error) {
         console.log(error.message)

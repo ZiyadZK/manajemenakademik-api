@@ -35,6 +35,7 @@ exports.F_Akun_validateLogin = async (payload) => {
         // }
         if(responseEmail.success) {
             const formattedData = {
+                id_akun: data.id_akun,
                 email_akun: payload.email_akun,
                 password_akun: payload.password_akun,
                 role_akun: data['role_akun'],
