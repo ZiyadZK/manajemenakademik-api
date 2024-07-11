@@ -51,12 +51,36 @@ exports.F_DataKelas_getAll = async () => {
 exports.F_DataKelas_get = async (kelas, jurusan, rombel) => {
     try {
         const data = await M_DataKelas.findOne({
-            where: {kelas, jurusan, rombel}
+            where: {
+                kelas, jurusan, rombel
+            },
+            raw: true,
+            include: [
+                {
+                    model: M_DataPegawai,
+                    as: 'wali_kelas'
+                },
+                {
+                    model: M_DataPegawai,
+                    as: 'gurubk_kelas'
+                }
+            ]
         })
 
         return {
             success: true,
-            data
+            data: {
+                id_kelas: data['id_kelas'],
+                kelas: data['kelas'],
+                jurusan: data['jurusan'],
+                rombel: data['rombel'],
+                fk_walikelas_id_pegawai: data['fk_walikelas_id_pegawai'],
+                fk_gurubk_id_pegawai: data['fk_gurubk_id_pegawai'],
+                nama_wali_kelas: data['wali_kelas.nama_pegawai'],
+                email_wali_kelas: data['wali_kelas.email_pegawai'],
+                nama_gurubk_kelas: data['gurubk_kelas.nama_pegawai'],
+                email_gurubk_kelas: data['gurubk_kelas.email_pegawai']
+            }
         }
     } catch (error) {
         console.log(error)

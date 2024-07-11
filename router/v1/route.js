@@ -1508,13 +1508,13 @@ const route_v1 = express.Router()
     }
 })
 
-.get('/v1/data/kelas/:kelas/:rombel/:no_rombel', async (req, res) => {
+.get('/v1/data/kelas/:kelas/:jurusan/:rombel', async (req, res) => {
     try {
         const kelas = req.params.kelas
+        const jurusan = req.params.jurusan
         const rombel = req.params.rombel
-        const no_rombel = req.params.no_rombel
 
-        const responseData = await F_DataKelas_get(kelas, rombel, no_rombel)
+        const responseData = await F_DataKelas_get(kelas, jurusan, rombel)
 
         if(responseData.success) {
             return res.status(200).json({
