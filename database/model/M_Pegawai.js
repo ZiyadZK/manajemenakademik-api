@@ -12,7 +12,7 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
       autoIncrement: true
     },
     nama_pegawai: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(150),
       allowNull: true
     },
     email_pegawai: {
@@ -20,11 +20,11 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
       allowNull: true
     },
     jabatan: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(150),
       allowNull: true
     },
     status_kepegawaian: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     nik: {
@@ -32,27 +32,27 @@ const M_DataPegawai = sequelize.define('data_pegawai', {
       allowNull: true,
     },
     nip: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     nuptk: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     tmpt_lahir: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(150),
       allowNull: true
     },
     tanggal_lahir: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(16),
       allowNull: true
     },
     tmt: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(16),
       allowNull: true
     },
     keterangan: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(150),
       allowNull: true
     },
     pensiun: {

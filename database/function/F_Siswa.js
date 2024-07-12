@@ -71,6 +71,7 @@ exports.F_Siswa_create = async (payload) => {
             success: true
         }
     } catch (error) {
+        console.log(error)
         console.log(error.message)
         return {
             success: false,

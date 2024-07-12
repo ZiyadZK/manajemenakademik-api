@@ -30,7 +30,7 @@ const M_DataAkun = sequelize.define('data_akuns', {
     tableName: 'data_akuns' // If table name is different from model name
 });
 
-M_DataAkun.hasMany(M_DataRiwayat, { foreignKey: 'fk_riwayat_id_akun', sourceKey: 'id_akun', as: 'riwayat', onDelete: 'CASCADE' })
-M_DataRiwayat.belongsTo(M_DataAkun, { foreignKey: 'fk_riwayat_id_akun', targetKey: 'id_akun', as: 'akun'})
+M_DataAkun.hasMany(M_DataRiwayat, { foreignKey: 'fk_riwayat_id_akun', sourceKey: 'id_akun', as: 'riwayat' })
+M_DataRiwayat.belongsTo(M_DataAkun, { foreignKey: 'fk_riwayat_id_akun', targetKey: 'id_akun', as: 'akun', onDelete: 'CASCADE'})
 
 module.exports = {M_DataAkun}
