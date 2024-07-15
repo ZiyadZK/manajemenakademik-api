@@ -115,3 +115,22 @@ exports.F_DataRiwayat_delete = async (id_riwayat) => {
         }
     }
 }
+
+exports.F_DataRiwayat_reset = async () => {
+    try {
+
+        await M_DataRiwayat.truncate()
+        
+        return {
+            success: true
+        }
+    } catch (error) {
+        console.log(error.message)
+        return {
+            success: false,
+            debug: {
+                message: error.message
+            }
+        }
+    }
+}
