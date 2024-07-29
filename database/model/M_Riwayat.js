@@ -17,7 +17,11 @@ const M_DataRiwayat = sequelize.define('data_riwayat', {
     },
     fk_riwayat_id_akun: {
         type: DataTypes.INTEGER(4),
-        allowNull: true
+        allowNull: true,
+        references: {
+            model: "data_akuns",
+            key: 'id_akun'
+        }
     },
     keterangan: {
         type: DataTypes.STRING,

@@ -12,6 +12,10 @@ const { F_DataMutasiSiswa_getAll, F_DataMutasiSiswa_create, F_DataMutasiSiswa_up
 const { F_DataKelas_getAll, F_DataKelas_get, F_DataKelas_setWaliKelas, F_DataKelas_setGuruBK, F_DataKelas_deleteWaliKelas, F_DataKelas_deleteGuruBK, F_DataKelas_deleteRoleKelas } = require('../../database/function/F_Kelas')
 const { F_DataRiwayat_getAll, F_DataRiwayat_get, F_DataRiwayat_create, F_DataRiwayat_reset } = require('../../database/function/F_Riwayat')
 const { F_Pendidikan_Pegawai_getAll, F_Pendidikan_Pegawai_create, F_Pendidikan_Pegawai_update, F_Pendidikan_Pegawai_delete } = require('../../database/function/F_Pendidikan_Pegawai')
+const { F_MataPelajaran_getAll, F_MataPelajaran_create, F_MataPelajaran_update, F_MataPelajaran_delete } = require('../../database/function/F_MataPelajaran')
+const { F_Nilai_getAll, F_Nilai_getAll_nis, F_Nilai_create, F_Nilai_update, F_Nilai_delete, F_Nilai_delete_nis } = require('../../database/function/F_Nilai')
+const { F_Kategori_MataPelajaran_getAll, F_Kategori_MataPelajaran_create, F_Kategori_MataPelajaran_update, F_Kategori_MataPelajaran_delete } = require('../../database/function/F_Kategori_MataPelajaran')
+const { F_Template_Kategori_MataPelajaran_getAll, F_Template_Kategori_MataPelajaran_update, F_Template_Kategori_MataPelajaran_create, F_Template_Kategori_MataPelajaran_delete, F_Template_Kategori_MataPelajaran_assign_mapel, F_Template_Kategori_MataPelajaran_edit_mapel, F_Template_Kategori_MataPelajaran_delete_mapel, F_Template_Kategori_MataPelajaran_asc_mapel, F_Template_Kategori_MataPelajaran_desc_mapel } = require('../../database/function/F_Template_Kategori_MataPelajaran')
 
 const errorHandler = (response) => ({
     error: 'Terdapat error dalam server, silahkan cek log server!',
@@ -2074,6 +2078,679 @@ const route_v1 = express.Router()
             debug: {
                 message: error.message
             }
+        })
+    }
+})
+
+// Mata Pelajaran
+.get('/v1/data/mapel', async (req, res) => {
+    try {
+        const response = await F_MataPelajaran_getAll()
+
+        if(response.success) {
+            return res.status(200).json({
+                data: response.data
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.post('/v1/data/mapel', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body
+
+        const response = await F_MataPelajaran_create(payload)
+
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil membuat data pelajaran'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR',
+            debug: response.debug
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.put('/v1/data/mapel', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body.payload
+        const id_mapel = await req.body.id_mapel
+
+        const response = await F_MataPelajaran_update(id_mapel, payload)
+
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil mengubah data pelajaran'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR',
+            debug: response.debug
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.delete('/v1/data/mapel', validateBody, async (req, res) => {
+    try {
+        const id_mapel = await req.body.id_mapel
+
+        const response = await F_MataPelajaran_delete(id_mapel)
+
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil menghapus data pelajaran'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR',
+            debug: response.debug
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// NILAI
+.get('/v1/data/nilai', async (req, res) => {
+    try {
+        const response = await F_Nilai_getAll()
+
+        if(response.success) {
+            return res.status(200).json({
+                data: response.data
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.get('/v1/data/nilai/:nis', async (req, res) => {
+    try {
+        const nis = req.params.nis
+
+        const response = await F_Nilai_getAll_nis(nis)
+
+        if(response.success) {
+            return res.status(200).json({
+                data: response.data
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.post('/v1/data/nilai', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body
+
+        const response = await F_Nilai_create(payload)
+
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil menambahkan nilai mata pelajaran'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.put('/v1/data/nilai', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body.payload
+        const id_nilai = await req.body.id_nilai
+
+        const response = await F_Nilai_update({payload, id_nilai})
+
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil mengubah nilai mata pelajaran'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.delete('/v1/data/nilai', validateBody, async (req, res) => {
+    try {
+        const id_nilai = await req.body.id_nilai
+        const nis = await req.body.nis
+
+        if(id_nilai) {
+            const response = await F_Nilai_delete(id_nilai)
+    
+            if(response.success) {
+                return res.status(200).json({
+                    message: 'Berhasil menghapus nilai mata pelajaran'
+                })
+            }
+    
+            return res.status(400).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                error_message: response.message,
+                tipe: 'DATABASE ERROR'
+            })
+        }
+
+        if(nis) {
+            const response = await F_Nilai_delete_nis(nis)
+    
+            if(response.success) {
+                return res.status(200).json({
+                    message: 'Berhasil menghapus nilai mata pelajaran berdasarkan nis'
+                })
+            }
+    
+            return res.status(400).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                error_message: response.message,
+                tipe: 'DATABASE ERROR'
+            })
+        }
+
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// KATEGORI MAPEL
+.get('/v1/data/mapel_kategori', async (req, res) => {
+    try {
+        const response = await F_Kategori_MataPelajaran_getAll()
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            data: response.data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.post('/v1/data/mapel_kategori', validateBody, async (req, res) => {
+    try {
+
+        const payload = await req.body
+
+        const response = await F_Kategori_MataPelajaran_create(payload)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil membuat kategori baru'
+        })
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.put('/v1/data/mapel_kategori', validateBody, async (req, res) => {
+    try {
+        
+        const id_kategori_mapel = await req.body.id_kategori_mapel
+        const payload = await req.body.payload
+
+        const response = await F_Kategori_MataPelajaran_update(id_kategori_mapel, payload)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil mengubah kategori mata pelajaran'
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.delete('/v1/data/mapel_kategori', validateBody, async (req, res) => {
+    try {
+        
+        const id_kategori_mapel = await req.body.id_kategori_mapel
+
+        const response = await F_Kategori_MataPelajaran_delete(id_kategori_mapel)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil menghapus kategori mata pelajaran'
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// TEMPLATE KATEGORI
+.get('/v1/data/template_kategori', async (req, res) => {
+    try {
+        const response = await F_Template_Kategori_MataPelajaran_getAll()
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            data: response.data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.get('/v1/data/template_kategori/:tahun_angkatan', async (req, res) => {
+    try {
+
+        const tahun_angkatan = req.params.tahun_angkatan
+
+        const response = await F_Template_Kategori_MataPelajaran_getAll(tahun_angkatan, null)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            data: response.data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.get('/v1/data/template_kategori/:tahun_angkatan/:jurusan', async (req, res) => {
+    try {
+
+        const tahun_angkatan = req.params.tahun_angkatan
+        const jurusan = req.params.jurusan
+
+        const response = await F_Template_Kategori_MataPelajaran_getAll(tahun_angkatan, jurusan)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            data: response.data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.post('/v1/data/template_kategori', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body
+        const response = await F_Template_Kategori_MataPelajaran_create(payload)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil menambahkan template baru'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.put('/v1/data/template_kategori', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body.payload
+        const no = await req.body.no
+        const response = await F_Template_Kategori_MataPelajaran_update(no, payload)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil mengubah template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.delete('/v1/data/template_kategori', validateBody, async (req, res) => {
+    try {
+        const no = await req.body.no
+        const response = await F_Template_Kategori_MataPelajaran_delete(no)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil menghapus template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// ASSIGN MAPEL KE TEMPLATE
+.post('/v1/data/template_mapel', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body
+        const response = await F_Template_Kategori_MataPelajaran_assign_mapel(payload)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil assign mapel ke dalam template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// EDIT MAPEL DI DALEM TEMPLATE
+.put('/v1/data/template_mapel', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body.payload
+        const fk_no_template_kategori = await req.body.fk_no_template_kategori
+        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
+        const response = await F_Template_Kategori_MataPelajaran_edit_mapel(fk_no_template_kategori, fk_mapel_id_mapel, payload)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil edit mapel di dalam template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.delete('/v1/data/template_mapel', validateBody, async (req, res) => {
+    try {
+        const fk_no_template_kategori = await req.body.fk_no_template_kategori
+        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
+        const response = await F_Template_Kategori_MataPelajaran_delete_mapel(fk_no_template_kategori, fk_mapel_id_mapel)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil menghapus mapel di dalam template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// ASCEND MAPEL DI DALEM TEMPLATE
+.put('/v1/data/template_mapel/asc', validateBody, async (req, res) => {
+    try {
+        const fk_no_template_kategori = await req.body.fk_no_template_kategori
+        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
+        const response = await F_Template_Kategori_MataPelajaran_asc_mapel(fk_no_template_kategori, fk_mapel_id_mapel)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil ascend mapel di dalam template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// DESCEND MAPEL DI DALAM TEMPLATE
+.put('/v1/data/template_mapel/desc', validateBody, async (req, res) => {
+    try {
+        const fk_no_template_kategori = await req.body.fk_no_template_kategori
+        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
+        const response = await F_Template_Kategori_MataPelajaran_desc_mapel(fk_no_template_kategori, fk_mapel_id_mapel)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Berhasil descend mapel di dalam template'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
         })
     }
 })

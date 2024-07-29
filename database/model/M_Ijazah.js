@@ -42,5 +42,4 @@ const M_DataIjazah = sequelize.define('data_ijazahs', {
     ]
   });
 
-
 module.exports = {M_DataIjazah}
