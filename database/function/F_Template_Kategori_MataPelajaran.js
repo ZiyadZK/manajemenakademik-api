@@ -4,12 +4,13 @@ const { M_Mata_Pelajaran_Kategori } = require("../model/M_Mata_Pelajaran_Kategor
 const { M_Mata_Pelajaran_Template_Kategori } = require("../model/M_Mata_Pelajaran_Template_Kategori")
 const { M_Mata_Pelajaran_Template_Mapel } = require("../model/M_Mata_Pelajaran_Template_Mata_Pelajaran")
 
-exports.F_Template_Kategori_MataPelajaran_getAll = async (tahun_angkatan, jurusan) => {
+exports.F_Template_Kategori_MataPelajaran_getAll = async (tahun_angkatan, jurusan, kelas) => {
     try {
         // Construct the where clause based on the provided parameters
         const whereClause = {};
         if (tahun_angkatan) whereClause.tahun_angkatan = tahun_angkatan;
-        if (jurusan) whereClause.jurusan = jurusan;
+        if (jurusan !== 'Semua') whereClause.jurusan = jurusan;
+        if (kelas !== 'Semua') whereClause.kelas = kelas;
 
         // Fetch the data from the database with the constructed where clause
         const data = await M_Mata_Pelajaran_Template_Kategori.findAll({
@@ -41,6 +42,7 @@ exports.F_Template_Kategori_MataPelajaran_getAll = async (tahun_angkatan, jurusa
                 no_urut: data.find(v => v['no'] === value)['no_urut'],
                 tahun_angkatan: data.find(v => v['no'] === value)['tahun_angkatan'],
                 jurusan: data.find(v => v['no'] === value)['jurusan'],
+                kelas: data.find(v => v['no'] === value)['kelas'],
                 fk_kategori_id_kategori_mapel: data.find(v => v['no'] === value)['fk_kategori_id_kategori_mapel'],
                 nama_kategori: data.find(v => v['no'] === value)['data_mapel_kategori.nama_kategori'],
                 template_mapel: data
@@ -173,12 +175,12 @@ exports.F_Template_Kategori_MataPelajaran_assign_mapel = async (payload) => {
     }
 }
 
-exports.F_Template_Kategori_MataPelajaran_edit_mapel = async (fk_no_template_kategori, fk_mapel_id_mapel, payload) => {
+exports.F_Template_Kategori_MataPelajaran_edit_mapel = async (no, payload) => {
     try {
+        console.log({no, payload})
         await M_Mata_Pelajaran_Template_Mapel.update(payload, {
             where: {
-                fk_no_template_kategori,
-                fk_mapel_id_mapel
+                no
             }
         })
         
@@ -201,8 +203,14 @@ exports.F_Template_Kategori_MataPelajaran_asc_mapel = async (fk_no_template_kate
         const dataMapel = await M_Mata_Pelajaran_Template_Mapel.findOne({
             raw: true,
             where: {
-                id_mapel: fk_mapel_id_mapel
+                fk_mapel_id_mapel,
+                fk_no_template_kategori
             }
+        })
+
+        console.log(dataMapel)
+        console.log({
+            fk_no_template_kategori, fk_mapel_id_mapel
         })
 
         // Ambil no urut yg sblmnya
@@ -210,13 +218,14 @@ exports.F_Template_Kategori_MataPelajaran_asc_mapel = async (fk_no_template_kate
             raw: true,
             where: {
                 fk_no_template_kategori,
-                no_urut: dataMapel.no_urut + 1
+                no_urut: Number(dataMapel.no_urut) - 1
             }
         })
+        console.log(previousDataMapel)
 
         // NAIKIN YG TERPILIH
         await M_Mata_Pelajaran_Template_Mapel.update({
-            no_urut: dataMapel.no_urut - 1
+            no_urut: Number(dataMapel.no_urut) - 1
         }, {
             where: {
                 fk_no_template_kategori,
@@ -226,11 +235,11 @@ exports.F_Template_Kategori_MataPelajaran_asc_mapel = async (fk_no_template_kate
 
         // TURUNIN YG PREVIOUS
         await M_Mata_Pelajaran_Template_Mapel.update({
-            no_urut: previousDataMapel.no_urut + 1
+            no_urut: Number(previousDataMapel.no_urut) + 1
         }, {
             where: {
                 fk_no_template_kategori,
-                fk_mapel_id_mapel: previousDataMapel.id_mapel
+                fk_mapel_id_mapel: previousDataMapel.fk_mapel_id_mapel
             }
         })
 
@@ -253,9 +262,10 @@ exports.F_Template_Kategori_MataPelajaran_desc_mapel = async (fk_no_template_kat
         const dataMapel = await M_Mata_Pelajaran_Template_Mapel.findOne({
             raw: true,
             where: {
-                id_mapel: fk_mapel_id_mapel
+                fk_mapel_id_mapel
             }
         })
+        console.log(dataMapel)
 
         // Ambil no urut yg setalahnya
         const previousDataMapel = await M_Mata_Pelajaran_Template_Mapel.findOne({
@@ -299,12 +309,11 @@ exports.F_Template_Kategori_MataPelajaran_desc_mapel = async (fk_no_template_kat
     }
 }
 
-exports.F_Template_Kategori_MataPelajaran_delete_mapel = async (fk_no_template_kategori, fk_mapel_id_mapel) => {
+exports.F_Template_Kategori_MataPelajaran_delete_mapel = async (no) => {
     try {
         await M_Mata_Pelajaran_Template_Mapel.destroy({
             where: {
-                fk_no_template_kategori,
-                fk_mapel_id_mapel
+                no
             }
         })
 

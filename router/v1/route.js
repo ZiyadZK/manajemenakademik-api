@@ -2537,6 +2537,36 @@ const route_v1 = express.Router()
     }
 })
 
+.get('/v1/data/template_kategori/:tahun_angkatan/:jurusan/:kelas', async (req, res) => {
+    try {
+
+        const tahun_angkatan = req.params.tahun_angkatan
+        const jurusan = req.params.jurusan
+        const kelas = req.params.kelas
+
+        const response = await F_Template_Kategori_MataPelajaran_getAll(tahun_angkatan, jurusan, kelas)
+
+        if(!response.success) {
+            return res.status(500).json({
+                message: 'Terdapat error saat memproses data, hubungi Administrator data',
+                tipe: 'DATABASE ERROR',
+                debug: response.debug
+            })
+        }
+
+        return res.status(200).json({
+            data: response.data
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            debug: error,
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
 .post('/v1/data/template_kategori', validateBody, async (req, res) => {
     try {
         const payload = await req.body
@@ -2647,9 +2677,8 @@ const route_v1 = express.Router()
 .put('/v1/data/template_mapel', validateBody, async (req, res) => {
     try {
         const payload = await req.body.payload
-        const fk_no_template_kategori = await req.body.fk_no_template_kategori
-        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
-        const response = await F_Template_Kategori_MataPelajaran_edit_mapel(fk_no_template_kategori, fk_mapel_id_mapel, payload)
+        const no = await req.body.no
+        const response = await F_Template_Kategori_MataPelajaran_edit_mapel(no, payload)
 
         if(!response.success) {
             return res.status(500).json({
@@ -2674,9 +2703,8 @@ const route_v1 = express.Router()
 
 .delete('/v1/data/template_mapel', validateBody, async (req, res) => {
     try {
-        const fk_no_template_kategori = await req.body.fk_no_template_kategori
-        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
-        const response = await F_Template_Kategori_MataPelajaran_delete_mapel(fk_no_template_kategori, fk_mapel_id_mapel)
+        const no = await req.body.no
+        const response = await F_Template_Kategori_MataPelajaran_delete_mapel(no)
 
         if(!response.success) {
             return res.status(500).json({
@@ -2688,62 +2716,6 @@ const route_v1 = express.Router()
 
         return res.status(200).json({
             message: 'Berhasil menghapus mapel di dalam template'
-        })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            message: 'Terdapat error saat memproses data, hubungi Administrator data',
-            debug: error,
-            tipe: 'INTERNAL SERVER'
-        })
-    }
-})
-
-// ASCEND MAPEL DI DALEM TEMPLATE
-.put('/v1/data/template_mapel/asc', validateBody, async (req, res) => {
-    try {
-        const fk_no_template_kategori = await req.body.fk_no_template_kategori
-        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
-        const response = await F_Template_Kategori_MataPelajaran_asc_mapel(fk_no_template_kategori, fk_mapel_id_mapel)
-
-        if(!response.success) {
-            return res.status(500).json({
-                message: 'Terdapat error saat memproses data, hubungi Administrator data',
-                tipe: 'DATABASE ERROR',
-                debug: response.debug
-            })
-        }
-
-        return res.status(200).json({
-            message: 'Berhasil ascend mapel di dalam template'
-        })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            message: 'Terdapat error saat memproses data, hubungi Administrator data',
-            debug: error,
-            tipe: 'INTERNAL SERVER'
-        })
-    }
-})
-
-// DESCEND MAPEL DI DALAM TEMPLATE
-.put('/v1/data/template_mapel/desc', validateBody, async (req, res) => {
-    try {
-        const fk_no_template_kategori = await req.body.fk_no_template_kategori
-        const fk_mapel_id_mapel = await req.body.fk_mapel_id_mapel
-        const response = await F_Template_Kategori_MataPelajaran_desc_mapel(fk_no_template_kategori, fk_mapel_id_mapel)
-
-        if(!response.success) {
-            return res.status(500).json({
-                message: 'Terdapat error saat memproses data, hubungi Administrator data',
-                tipe: 'DATABASE ERROR',
-                debug: response.debug
-            })
-        }
-
-        return res.status(200).json({
-            message: 'Berhasil descend mapel di dalam template'
         })
     } catch (error) {
         console.log(error)

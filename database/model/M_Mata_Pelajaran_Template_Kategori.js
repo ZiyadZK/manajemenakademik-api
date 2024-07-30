@@ -18,6 +18,10 @@ const M_Mata_Pelajaran_Template_Kategori = sequelize.define('data_mapel_template
         type: DataTypes.STRING(6),
         allowNull: false,
     },
+    kelas: {
+        type: DataTypes.STRING(5),
+        allowNull: false
+    },
     jurusan: {
         type: DataTypes.STRING(15),
         allowNull: false
