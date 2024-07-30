@@ -8,7 +8,7 @@ exports.F_Template_Kategori_MataPelajaran_getAll = async (tahun_angkatan, jurusa
     try {
         // Construct the where clause based on the provided parameters
         const whereClause = {};
-        if (tahun_angkatan) whereClause.tahun_angkatan = tahun_angkatan;
+        if (tahun_angkatan !== 'Semua') whereClause.tahun_angkatan = tahun_angkatan;
         if (jurusan !== 'Semua') whereClause.jurusan = jurusan;
         if (kelas !== 'Semua') whereClause.kelas = kelas;
 
